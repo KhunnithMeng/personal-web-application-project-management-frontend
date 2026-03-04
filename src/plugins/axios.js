@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost/personal-web-application-project-management-system/public/api',
+    baseURL: 'http://personal-web-application-project-management-system.test/api',
     withCredentials: false,
     headers: {
         'Content-Type': 'application/json',
@@ -10,7 +10,7 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-    const token = '9|lzBXaJrms9RgNp73fj2QXp8XAQW3xWCUb54mpJ7b1b062bcb'; // use this for now will be using with authentication next time;
+    const token = '13|xVVIcDrTktStaP2ZciUTDNMJQQqUorWTCO2iGmpNd08466f4'; // use this for now will be using with authentication next time;
 
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;

@@ -51,6 +51,14 @@ function handleAction(action, data) {
   }
 }
 
+function search(value) {
+  loading.value = true;
+  getProjects(value)
+      .then((res) => items.value = res)
+      .catch((err) => console.log(err))
+      .finally(() => loading.value = false)
+}
+
 </script>
 
 <template>
@@ -65,7 +73,7 @@ function handleAction(action, data) {
       </v-btn>
     </div>
 
-    <ProjectFilter/>
+    <ProjectFilter @search="search" />
 
     <div class="mt-3">
       <v-data-table :items="items" :headers="headers" :loading="loading">
