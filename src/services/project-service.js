@@ -1,7 +1,7 @@
 import http from '@/plugins/axios';
 
-export function getProjects() {
-    return http.get('/project');
+export function getProjects(filter = null) {
+    return http.get('/project',  { params: filter || '' });
 }
 
 export function createProject(data) {
