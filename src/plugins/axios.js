@@ -1,4 +1,7 @@
 import axios from 'axios';
+import {useMessage} from "@/composibles/useMessage";
+
+const { showMessage } = useMessage();
 
 const apiClient = axios.create({
     baseURL: 'http://personal-web-application-project-management-system.test/api',
@@ -26,6 +29,12 @@ apiClient.interceptors.response.use((response) => {
     }
 
     return response.data
-}, error => Promise.reject(error))
+}, error => {
+    if (error?.response && Boolean(error.response.data)) {
+        const response = error.response.data;
+        showMessage(response.message, 'error');
+    }
+    return Promise.reject(error);
+})
 
 export default apiClient;
