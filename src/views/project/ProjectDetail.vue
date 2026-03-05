@@ -19,6 +19,7 @@ const router = useRouter();
 const { openLoader, closeLoader } = useLoader();
 const { showMessage } = useMessage();
 
+const form = ref(null);
 let projectId = ref(null);
 let project = ref({
   name: '',
@@ -32,7 +33,12 @@ let project = ref({
 let categories = ref([]);
 let techStacks = ref([]);
 
-function submit() {
+async function submit() {
+  const { valid } = await form.value.validate();
+  if (!valid) {
+    showMessage('Please check the highlighted fields — some information is missing or incorrect.', 'error');
+    return;
+  }
   const payload = {
     ...project.value,
     startDate: project.value.startDate && new Date(project.value.startDate).toISOString(),
@@ -113,11 +119,15 @@ function fetchCategories() {
     </div>
 
     <v-card class="mx-auto pa-5" max-width="1200">
-      <span class="d-flex justify-space-between align-center ga-5">
+      <v-form ref="form">
+        <span class="d-flex justify-space-between align-center ga-5">
         <v-text-field label="Project Title"
                       v-model="project.name"
                       autocomplete="off"
-                      variant="underlined"></v-text-field>
+                      variant="underlined"
+                      required
+                      :rules="[v => !!v || 'Project name is required']">
+        </v-text-field>
         <v-btn-toggle color="primary"
                       v-model="project.status">
           <v-btn v-for="status of statusList"
@@ -128,13 +138,15 @@ function fetchCategories() {
         </v-btn-toggle>
       </span>
 
-      <span class="d-flex justify-space-between align-center ga-5">
+        <span class="d-flex justify-space-between align-center ga-5">
         <v-date-input prepend-icon=""
                       prepend-inner-icon="$calendar"
                       label="Start Date"
                       v-model="project.startDate"
                       persistent-placeholder
-                      autocomplete="off"></v-date-input>
+                      autocomplete="off"
+                      required
+                      :rules="[v => !!v || 'Start date is required']"></v-date-input>
         <v-date-input prepend-icon=""
                       prepend-inner-icon="$calendar"
                       label="End Date"
@@ -143,31 +155,36 @@ function fetchCategories() {
                       autocomplete="off"></v-date-input>
       </span>
 
-      <v-combobox variant="underlined"
-                  chips
-                  clearable
-                  placeholder="Tech Stack"
-                  :items="techStacks"
-                  item-value="id"
-                  item-title="name"
-                  v-model="project.techStackIds"
-                  :return-object="false"
-                  autocomplete="off"
-                  multiple></v-combobox>
+        <v-combobox variant="underlined"
+                    chips
+                    clearable
+                    placeholder="Tech Stack"
+                    item-value="id"
+                    item-title="name"
+                    v-model="project.techStackIds"
+                    autocomplete="off"
+                    required
+                    multiple
+                    :rules="[v => !!v || 'Tech stack is required']"
+                    :return-object="false"
+                    :items="techStacks"></v-combobox>
 
-      <v-autocomplete variant="underlined"
-                      placeholder="Category"
-                      :items="categories"
-                      item-value="id"
-                      item-title="name"
-                      autocomplete="off"
-                      v-model="project.categoryId"
-                      clearable></v-autocomplete>
+        <v-autocomplete variant="underlined"
+                        placeholder="Category"
+                        item-value="id"
+                        item-title="name"
+                        autocomplete="off"
+                        v-model="project.categoryId"
+                        clearable
+                        required
+                        :rules="[v => !!v || 'Category is required']"
+                        :items="categories"></v-autocomplete>
 
-      <v-textarea row="4"
-                  placeholder="Description"
-                  v-model="project.description"
-                  clearable></v-textarea>
+        <v-textarea row="4"
+                    placeholder="Description"
+                    v-model="project.description"
+                    clearable></v-textarea>
+      </v-form>
     </v-card>
   </div>
 
