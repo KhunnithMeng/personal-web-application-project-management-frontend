@@ -43,19 +43,22 @@ function submit() {
   openLoader();
   if (projectId.value) {
     updateProjectById(projectId.value, project.value)
-        .then(() => showMessage('Successfully updated'))
+        .then(() => {
+          showMessage('Successfully updated');
+          router.back();
+        })
         .catch(err => console.error(err))
         .finally(() => {
           closeLoader();
-          router.back();
         })
   } else {
     createProject(payload)
-        .catch(err => console.log(err))
-        .finally(() => {
-          closeLoader();
+        .then(() => {
+          showMessage("Successfully created");
           router.back();
-        });
+        })
+        .catch(error => console.error(error))
+        .finally(() => closeLoader());
   }
 }
 
