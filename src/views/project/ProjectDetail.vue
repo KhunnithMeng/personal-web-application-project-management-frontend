@@ -165,7 +165,7 @@ function fetchCategories() {
                     autocomplete="off"
                     required
                     multiple
-                    :rules="[v => !!v || 'Tech stack is required']"
+                    :rules="[v => (!!v && v.length > 0) || 'Tech stack is required at least one']"
                     :return-object="false"
                     :items="techStacks"></v-combobox>
 
