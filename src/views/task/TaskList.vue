@@ -1,9 +1,10 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {getTasks} from "@/services/task-service";
+import {deleteTaskById, getTasks} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {formatDate} from "@/utils/date";
 import {router} from "@/router";
+import {useMessage} from "@/composibles/useMessage";
 
 const headers = Object.freeze([
   { title: 'Title', key: 'title' },
@@ -21,18 +22,24 @@ const actions = [
   {name: 'Delete', icon: 'mdi-delete', color: 'red', value: 'delete'}
 ];
 
+const { showMessage } = useMessage();
+
 const loader = ref(false);
 const items = ref([]);
 
 onMounted(() => {
   loader.value = true;
+  getAllTask();
+});
+
+function getAllTask() {
   getTasks()
       .then(res => {
         items.value = res;
       })
       .catch(err => console.error(err))
       .finally(() => loader.value = false)
-});
+}
 
 function create() {
   router.push('/task/add');
@@ -42,6 +49,21 @@ function handleAction(action, data) {
   if (action === 'edit') {
     router.push('/project/'+ data.projectId +'/task/edit/' + data.id);
   }
+
+  if (action === 'delete') {
+    handleDeleteTask(data);
+  }
+}
+
+function handleDeleteTask(data) {
+  loader.value = true;
+  deleteTaskById(data.projectId, data.id)
+      .then(() => {
+        showMessage('Task is successfully deleted');
+        getAllTask();
+      })
+      .catch(res => showMessage(res.message, 'error'))
+      .finally(() => loader.value = false)
 }
 
 </script>
