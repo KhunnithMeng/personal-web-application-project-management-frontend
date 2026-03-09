@@ -7,11 +7,16 @@ import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
 import {getProjects} from "@/services/project-service";
 import {useLoader} from "@/composibles/useLoader";
-import {createTask} from "@/services/task-service";
+import {createTask, editTaskById, getTaskById} from "@/services/task-service";
 import {useMessage} from "@/composibles/useMessage";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
 const { loader } = useLoader();
 const { showMessage } = useMessage();
+
+const taskId = ref(null);
+const projectId = ref(null);
 
 const tags = ref([]);
 const projects = ref([]);
@@ -30,7 +35,15 @@ const task = ref({
 
 onMounted(() => {
   getTags().then(res => tags.value = res || []);
-  getProjects().then(res => projects.value = res || [])
+  getProjects().then(res => projects.value = res || []);
+
+  projectId.value = route.params.projectId;
+  taskId.value = route.params.id;
+  if (taskId.value && projectId.value) {
+    getTaskById(projectId.value, taskId.value).then(res => {
+      task.value = { ...res, tagIds: res.tags?.map(t => t.id) }
+    });
+  }
 })
 
 async function submit() {
@@ -40,11 +53,30 @@ async function submit() {
     return;
   }
 
+  if (projectId.value && taskId.value) {
+    handleEditTask();
+  } else {
+    handleCreateTask();
+  }
+}
+
+function handleEditTask() {
+  loader.value = true;
+  editTaskById(projectId.value, taskId.value, task.value)
+      .then(() => {
+        showMessage('Task is successfully edited');
+        router.push('/task');
+      })
+      .catch(res => showMessage(res.message, 'error'))
+      .finally(() => loader.value = false);
+}
+
+function handleCreateTask() {
   loader.value = true;
   createTask(task.value.projectId, task.value)
       .then(() => {
         showMessage('Task is successfully created');
-        router.back();
+        router.push('/task');
       })
       .catch(res => showMessage(res.message, 'error'))
       .finally(() => loader.value = false);
@@ -55,7 +87,7 @@ async function submit() {
 <template>
 <div class="ma-5">
   <div class="d-flex justify-space-between align-center mb-3">
-    <h1> Create Task </h1>
+    <h1> {{ taskId ? 'Edit Task' : 'Create Task' }} </h1>
 
     <span>
       <v-btn prepend-icon="mdi-cancel"

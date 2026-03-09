@@ -12,7 +12,8 @@ const routes = [
     {path: '/project/edit/:id',component: ProjectDetail},
 
     {path: '/task', component: TaskList},
-    {path: '/task/add', component: TaskDetail}
+    {path: '/task/add', component: TaskDetail},
+    {path: '/project/:projectId/task/edit/:id', component: TaskDetail},
 ];
 export const router = createRouter({
     routes,

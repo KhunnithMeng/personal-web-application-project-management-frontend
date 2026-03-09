@@ -7,3 +7,11 @@ export function getTasks() {
 export function createTask(projectId, data) {
     return http.post('/project/'+ projectId +'/task', data)
 }
+
+export function getTaskById(projectId, taskId) {
+    return http.get(`/project/${projectId}/task/${taskId}`);
+}
+
+export function editTaskById(projectId, taskId, data) {
+    return http.put(`/project/${projectId}/task/${taskId}`, data)
+}

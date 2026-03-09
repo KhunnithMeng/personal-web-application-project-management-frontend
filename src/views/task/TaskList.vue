@@ -39,7 +39,9 @@ function create() {
 }
 
 function handleAction(action, data) {
-  console.log(action, data)
+  if (action === 'edit') {
+    router.push('/project/'+ data.projectId +'/task/edit/' + data.id);
+  }
 }
 
 </script>
