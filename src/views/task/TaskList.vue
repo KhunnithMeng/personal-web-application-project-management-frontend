@@ -90,6 +90,12 @@ function handleDeleteTask(data) {
                   variant="elevated"> {{value}} </v-chip>
         </template>
 
+        <template v-slot:[`item.priority`]="{ value }">
+          <v-chip :color="TASK_PRIORITY.find(t => t.value === value)?.color"
+                  :prepend-icon="TASK_PRIORITY.find(t => t.value === value)?.icon"
+                  variant="text"> {{value}} </v-chip>
+        </template>
+
         <template v-slot:[`item.deadline`]="{ value }">
           {{ formatDate(value) }}
         </template>
