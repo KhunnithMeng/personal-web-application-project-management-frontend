@@ -5,6 +5,8 @@ import TruncateText from "@/components/commons/TruncateText.vue";
 import {formatDate} from "@/utils/date";
 import {router} from "@/router";
 import {useMessage} from "@/composibles/useMessage";
+import {TASK_STATUSES} from "@/constants/taskStatus";
+import {TASK_PRIORITY} from "@/constants/taskPriority";
 
 const headers = Object.freeze([
   { title: 'Title', key: 'title' },
@@ -84,7 +86,8 @@ function handleDeleteTask(data) {
                     :items="items"
                     :loading="loader">
         <template v-slot:[`item.status`]="{ value }">
-          <v-chip> {{value}} </v-chip>
+          <v-chip :color="TASK_STATUSES.find(t => t.value === value)?.color"
+                  variant="elevated"> {{value}} </v-chip>
         </template>
 
         <template v-slot:[`item.deadline`]="{ value }">
