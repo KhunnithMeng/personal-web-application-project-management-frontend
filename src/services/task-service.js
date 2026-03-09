@@ -15,3 +15,7 @@ export function getTaskById(projectId, taskId) {
 export function editTaskById(projectId, taskId, data) {
     return http.put(`/project/${projectId}/task/${taskId}`, data)
 }
+
+export function deleteTaskById(projectId, taskId) {
+    return http.delete(`/project/${projectId}/task/${taskId}`)
+}
