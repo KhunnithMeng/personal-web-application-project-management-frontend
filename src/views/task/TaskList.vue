@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import {getTasks} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {formatDate} from "@/utils/date";
+import {router} from "@/router";
 
 const headers = Object.freeze([
   { title: 'Title', key: 'title' },
@@ -13,7 +14,12 @@ const headers = Object.freeze([
   { title: 'Actual Hours', key: 'actualHours' },
   { title: 'Tags', key: 'tags' },
   { title: 'Description', key: 'description' },
+  { title: 'Action', key: 'action' },
 ]);
+const actions = [
+  {name: 'Edit', icon: 'mdi-pencil', color: '', value: 'edit'},
+  {name: 'Delete', icon: 'mdi-delete', color: 'red', value: 'delete'}
+];
 
 const loader = ref(false);
 const items = ref([]);
@@ -26,7 +32,15 @@ onMounted(() => {
       })
       .catch(err => console.error(err))
       .finally(() => loader.value = false)
-})
+});
+
+function create() {
+  router.push('/task/add');
+}
+
+function handleAction(action, data) {
+  console.log(action, data)
+}
 
 </script>
 
@@ -36,7 +50,7 @@ onMounted(() => {
       <h1>Task</h1>
 
       <v-btn color="primary"
-             prepend-icon="mdi-plus-thick">
+             prepend-icon="mdi-plus-thick" @click="create()">
         Create Task
       </v-btn>
     </div>
@@ -71,6 +85,25 @@ onMounted(() => {
 
         <template v-slot:[`item.description`]="{ value }">
           <TruncateText :text="value"></TruncateText>
+        </template>
+
+        <template v-slot:[`item.action`]="{ item }">
+          <v-btn icon>
+            <v-icon>mdi-dots-vertical</v-icon>
+            <v-menu activator="parent">
+              <v-list>
+                <v-list-item v-for="(action, index) of actions"
+                             :key="index" >
+                  <v-btn :prepend-icon="action.icon"
+                         class="w-100 justify-start"
+                         :color="action.color"
+                         @click="handleAction(action.value, item)">
+                    {{ action.name }}
+                  </v-btn>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-btn>
         </template>
       </v-data-table>
     </div>
