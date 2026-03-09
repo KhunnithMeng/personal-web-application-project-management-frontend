@@ -7,3 +7,7 @@ export function getTasks() {
 export function createTask(projectId, data) {
     return http.post('/project/'+ projectId +'/task', data)
 }
+
+export function getTaskById(projectId, taskId) {
+    return http.get(`/project/${projectId}/task/${taskId}`);
+}
