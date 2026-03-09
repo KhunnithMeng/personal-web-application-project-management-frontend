@@ -7,7 +7,7 @@ import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
 import {getProjects} from "@/services/project-service";
 import {useLoader} from "@/composibles/useLoader";
-import {createTask, getTaskById} from "@/services/task-service";
+import {createTask, editTaskById, getTaskById} from "@/services/task-service";
 import {useMessage} from "@/composibles/useMessage";
 import {useRoute} from "vue-router";
 
@@ -42,7 +42,7 @@ onMounted(() => {
   if (taskId.value && projectId.value) {
     getTaskById(projectId.value, taskId.value).then(res => {
       task.value = { ...res, tagIds: res.tags?.map(t => t.id) }
-    })
+    });
   }
 })
 
@@ -53,11 +53,30 @@ async function submit() {
     return;
   }
 
+  if (projectId.value && taskId.value) {
+    handleEditTask();
+  } else {
+    handleCreateTask();
+  }
+}
+
+function handleEditTask() {
+  loader.value = true;
+  editTaskById(projectId.value, taskId.value, task.value)
+      .then(() => {
+        showMessage('Task is successfully edited');
+        router.push('/task');
+      })
+      .catch(res => showMessage(res.message, 'error'))
+      .finally(() => loader.value = false);
+}
+
+function handleCreateTask() {
   loader.value = true;
   createTask(task.value.projectId, task.value)
       .then(() => {
         showMessage('Task is successfully created');
-        router.back();
+        router.push('/task');
       })
       .catch(res => showMessage(res.message, 'error'))
       .finally(() => loader.value = false);
