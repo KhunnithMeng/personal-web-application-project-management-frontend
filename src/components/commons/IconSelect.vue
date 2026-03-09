@@ -24,6 +24,7 @@ const emit = defineEmits(['update:modelValue'])
     <template #selection="{ item }">
                   <span>
                     <v-icon :icon="item.raw.icon"
+                            :color="item.raw.color"
                             size="18"
                             class="mr-2"></v-icon> {{ item.title }}
                   </span>
@@ -32,7 +33,8 @@ const emit = defineEmits(['update:modelValue'])
     <template #item="{ props, item }">
       <v-list-item v-bind="props">
         <template #prepend>
-          <v-icon :icon="item.raw.icon"></v-icon>
+          <v-icon :icon="item.raw.icon"
+                  :color="item.raw.color"></v-icon>
         </template>
       </v-list-item>
     </template>
