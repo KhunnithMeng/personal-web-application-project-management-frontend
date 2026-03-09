@@ -6,13 +6,7 @@ import {getCategories} from "@/services/category-service";
 import {createProject, getProjectById, updateProjectById} from "@/services/project-service";
 import {useLoader} from "@/composibles/useLoader";
 import {useMessage} from "@/composibles/useMessage";
-
-const statusList = Object.freeze([
-  { name: 'Planning', value: 'planning' },
-  { name: 'Active', value: 'active' },
-  { name: 'Complete', value: 'complete' },
-  { name: 'Waiting', value: 'waiting' }
-])
+import {PROJECT_STATUSES} from "@/constants/projectStatus";
 
 const route = useRoute();
 const router = useRouter();
@@ -130,8 +124,9 @@ function fetchCategories() {
         </v-text-field>
         <v-btn-toggle color="primary"
                       v-model="project.status">
-          <v-btn v-for="status of statusList"
+          <v-btn v-for="status of PROJECT_STATUSES"
                  :key="status.value"
+                 :color="PROJECT_STATUSES.find(v => v.value === status.value)?.color"
                  :value="status.value">
             {{ status.name }}
           </v-btn>
