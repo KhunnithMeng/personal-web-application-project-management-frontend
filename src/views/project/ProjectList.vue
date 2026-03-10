@@ -85,7 +85,7 @@ function search(value) {
         <template v-slot:[`item.status`]="{ value }">
           <v-chip variant="flat"
                   :color="PROJECT_STATUSES.find(s => s.value === value)?.color">
-            {{ value }}
+            {{ PROJECT_STATUSES.find(s => s.value === value)?.name }}
           </v-chip>
         </template>
 
