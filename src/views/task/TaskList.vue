@@ -7,6 +7,7 @@ import {router} from "@/router";
 import {useMessage} from "@/composibles/useMessage";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
+import TaskFilter from "@/views/task/TaskFilter.vue";
 
 const headers = Object.freeze([
   { title: 'Title', key: 'title' },
@@ -68,6 +69,14 @@ function handleDeleteTask(data) {
       .finally(() => loader.value = false)
 }
 
+function search(filter) {
+  loader.value = true;
+  getTasks(filter)
+      .then(res => items.value = res || [])
+      .catch(res => showMessage(res.message))
+      .finally(() => loader.value = false)
+}
+
 </script>
 
 <template>
@@ -80,6 +89,8 @@ function handleDeleteTask(data) {
         Create Task
       </v-btn>
     </div>
+
+    <TaskFilter @search="search" />
 
     <div class="mt-3">
       <v-data-table :headers="headers"
