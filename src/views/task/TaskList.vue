@@ -98,7 +98,7 @@ function search(filter) {
                     :loading="loader">
         <template v-slot:[`item.status`]="{ value }">
           <v-chip :color="TASK_STATUSES.find(t => t.value === value)?.color"
-                  variant="elevated"> {{value}} </v-chip>
+                  variant="elevated"> {{ TASK_STATUSES.find(t => t.value === value)?.title }} </v-chip>
         </template>
 
         <template v-slot:[`item.priority`]="{ value }">
