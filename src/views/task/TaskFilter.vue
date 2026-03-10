@@ -5,6 +5,7 @@ import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
 import {formatDateLocal} from "@/utils/date";
+import {getProjects} from "@/services/project-service";
 
 const emit = defineEmits(['search'])
 
@@ -13,12 +14,15 @@ const filterForm = ref({
   status: null,
   priority: null,
   deadline: null,
-  tags: null
+  tags: null,
+  projectId: null,
 });
 const tags = ref([]);
+const projects = ref([]);
 
 onMounted(() => {
-  getTags().then(res => tags.value = res?.map(r => r.name) || [])
+  getTags().then(res => tags.value = res?.map(r => r.name) || []);
+  getProjects().then(res => projects.value = res || []);
 });
 
 function search() {
@@ -83,13 +87,24 @@ function clear() {
               v-model="filterForm.tags"></v-select>
   </v-col>
 </v-row>
-<v-row class="justify-end">
-  <v-col class="d-flex justify-end" cols="4">
-    <v-btn prepend-icon="mdi-magnify"
-           class="mr-2"
-           type="button"
-           color="primary"
-           @click="search">Search</v-btn>
+<v-row class="justify-end align-content-start">
+  <v-col cols="4">
+    <v-select
+        clearable
+        label="Select"
+        :items="projects"
+        item-title="name"
+        item-value="id"
+        v-model="filterForm.projectId"
+        variant="underlined"
+    ></v-select>
+  </v-col>
+  <v-col class="d-flex justify-end align-center">
+      <v-btn prepend-icon="mdi-magnify"
+             class="mr-2"
+             type="button"
+             color="primary"
+             @click="search">Search</v-btn>
 
     <v-btn prepend-icon="mdi-broom"
            type="button"
