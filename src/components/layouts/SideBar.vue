@@ -26,15 +26,12 @@ function navigate(value) {
     <v-list >
       <v-list-item prepend-icon="mdi-lightbulb-on-outline"
                    title="Projects"
-                   @click="navigate('project')"
-                   value="project">
+                   @click="navigate('project')">
       </v-list-item>
 
       <v-list-item prepend-icon="mdi-format-list-bulleted"
                    title="Tasks"
-                   @click="navigate('task')"
-                   value="task">
-        <RouterLink to="/task"></RouterLink>
+                   @click="navigate('task')">
       </v-list-item>
     </v-list>
 
@@ -43,17 +40,17 @@ function navigate(value) {
     <v-list>
       <v-list-item prepend-icon="mdi-database-cog"
                    title="Tech Stack"
-                   value="techStack">
+                   @click="navigate('tech-stack')">
       </v-list-item>
 
       <v-list-item prepend-icon="mdi-shape"
                    title="Category"
-                   value="category">
+                   @click="navigate('category')">
       </v-list-item>
 
       <v-list-item prepend-icon="mdi-tag-outline"
                    title="Tag"
-                   value="tag">
+                   @click="navigate('tag')">
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
