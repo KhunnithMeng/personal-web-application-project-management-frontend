@@ -1,7 +1,7 @@
 import http from '@/plugins/axios';
 
-export function getTasks() {
-    return http.get('/task')
+export function getTasks(params) {
+    return http.get('/task', { params: params || null})
 }
 
 export function createTask(projectId, data) {
