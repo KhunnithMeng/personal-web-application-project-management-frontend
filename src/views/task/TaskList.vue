@@ -104,7 +104,7 @@ function search(filter) {
         <template v-slot:[`item.priority`]="{ value }">
           <v-chip :color="TASK_PRIORITY.find(t => t.value === value)?.color"
                   :prepend-icon="TASK_PRIORITY.find(t => t.value === value)?.icon"
-                  variant="text"> {{value}} </v-chip>
+                  variant="text"> {{ TASK_PRIORITY.find(t => t.value === value)?.title }} </v-chip>
         </template>
 
         <template v-slot:[`item.deadline`]="{ value }">
