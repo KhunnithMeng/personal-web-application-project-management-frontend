@@ -66,7 +66,16 @@ function create() {
 
 function handleAction(action, data) {
   if (action === 'edit') {
-    router.push('/project/'+ data.projectId +'/task/edit/' + data.id);
+    if (projectId.value) {
+      router.push(`/project/${data.projectId}/task/edit/${data.id}`);
+    } else {
+      router.push({
+        path: '/project/'+ data.projectId +'/task/edit/' + data.id,
+        query: {
+          isAllTask: true
+        }
+      });
+    }
   }
 
   if (action === 'delete') {

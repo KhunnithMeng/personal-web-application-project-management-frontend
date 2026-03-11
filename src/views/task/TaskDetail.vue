@@ -17,6 +17,7 @@ const { showMessage } = useMessage();
 
 const taskId = ref(null);
 const projectId = ref(null);
+const isAllTask = ref(false);
 
 const tags = ref([]);
 const projects = ref([]);
@@ -37,6 +38,7 @@ onMounted(() => {
   getTags().then(res => tags.value = res || []);
   getProjects().then(res => projects.value = res || []);
 
+  isAllTask.value = route.query.isAllTask === 'true';
   projectId.value = +route.params.projectId;
   taskId.value = +route.params.id;
   if (taskId.value && projectId.value) {
@@ -70,7 +72,11 @@ function handleEditTask() {
   editTaskById(projectId.value, taskId.value, task.value)
       .then(() => {
         showMessage('Task is successfully edited');
-        router.push('/task');
+        if (isAllTask.value) {
+          router.push('/task');
+        } else {
+          router.push(`/project/${projectId.value}/task`)
+        }
       })
       .catch(res => showMessage(res.message, 'error'))
       .finally(() => loader.value = false);
@@ -127,7 +133,7 @@ function handleCreateTask() {
                       v-model="task.projectId"
                       :rules="[v => !!v || 'Project is required']"
                       :items="projects"
-                      :readonly="projectId"></v-select>
+                      :readonly="projectId && !isAllTask"></v-select>
 
             <v-text-field placeholder="Title"
                           variant="underlined"
