@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {deleteTaskById, getTasks, getTasksByProjectId} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {formatDate} from "@/utils/date";
@@ -34,11 +34,13 @@ const items = ref([]);
 const projectId = ref(null);
 
 onMounted(() => {
-  projectId.value = route.params.projectId;
   fetchTaskList();
 });
 
+watch(() => route.params.projectId, fetchTaskList);
+
 function fetchTaskList(filter) {
+  projectId.value = route.params.projectId ? +route.params.projectId : 0;
   if (projectId.value) {
     loader.value = true;
     getTasksByProjectId(projectId.value, filter)
@@ -92,7 +94,7 @@ function handleDeleteTask(data) {
       </v-btn>
     </div>
 
-    <TaskFilter @search="fetchTaskList" />
+    <TaskFilter @search="fetchTaskList" :project-id="projectId" />
 
     <div class="mt-3">
       <v-data-table :headers="headers"
