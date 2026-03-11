@@ -40,6 +40,11 @@ function fetchProjects() {
 }
 
 function handleAction(action, data) {
+  if (action === 'task') {
+    router.push(`/project/${data.id}/task`);
+    return;
+  }
+
   if (action === 'edit') {
     router.push('/project/edit/' + data.id);
     return;
