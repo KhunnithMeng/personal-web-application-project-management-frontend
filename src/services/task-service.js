@@ -4,6 +4,10 @@ export function getTasks(params) {
     return http.get('/task', { params: params || null})
 }
 
+export function getTasksByProjectId(projectId, params) {
+    return http.get(`/project/${projectId}/task`, { params: params || null })
+}
+
 export function createTask(projectId, data) {
     return http.post('/project/'+ projectId +'/task', data)
 }
