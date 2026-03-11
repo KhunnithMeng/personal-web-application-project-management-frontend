@@ -1,6 +1,6 @@
 <script setup>
-import {onMounted, ref} from "vue";
-import {deleteTaskById, getTasks} from "@/services/task-service";
+import {onMounted, ref, watch} from "vue";
+import {deleteTaskById, getTasks, getTasksByProjectId} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {formatDate} from "@/utils/date";
 import {router} from "@/router";
@@ -8,6 +8,7 @@ import {useMessage} from "@/composibles/useMessage";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
 import TaskFilter from "@/views/task/TaskFilter.vue";
+import {useRoute} from "vue-router";
 
 const headers = Object.freeze([
   { title: 'Title', key: 'title' },
@@ -26,31 +27,55 @@ const actions = [
 ];
 
 const { showMessage } = useMessage();
+const route = useRoute();
 
 const loader = ref(false);
 const items = ref([]);
+const projectId = ref(null);
 
 onMounted(() => {
-  loader.value = true;
-  getAllTask();
+  fetchTaskList();
 });
 
-function getAllTask() {
-  getTasks()
-      .then(res => {
-        items.value = res;
-      })
-      .catch(err => console.error(err))
-      .finally(() => loader.value = false)
+watch(() => route.params.projectId, fetchTaskList);
+
+function fetchTaskList(filter) {
+  projectId.value = route.params.projectId ? +route.params.projectId : 0;
+  if (projectId.value) {
+    loader.value = true;
+    getTasksByProjectId(projectId.value, filter)
+        .then(res => items.value = res || [])
+        .catch(err => console.log(err))
+        .finally(() => loader.value = false)
+  } else {
+    loader.value = true;
+    getTasks(filter)
+        .then(res => items.value = res || [])
+        .catch(err => console.error(err))
+        .finally(() => loader.value = false)
+  }
 }
 
 function create() {
-  router.push('/task/add');
+  if (projectId.value) {
+    router.push(`/project/${projectId.value}/task/add`);
+  } else {
+    router.push('/task/add')
+  }
 }
 
 function handleAction(action, data) {
   if (action === 'edit') {
-    router.push('/project/'+ data.projectId +'/task/edit/' + data.id);
+    if (projectId.value) {
+      router.push(`/project/${data.projectId}/task/edit/${data.id}`);
+    } else {
+      router.push({
+        path: '/project/'+ data.projectId +'/task/edit/' + data.id,
+        query: {
+          isAllTask: true
+        }
+      });
+    }
   }
 
   if (action === 'delete') {
@@ -63,17 +88,9 @@ function handleDeleteTask(data) {
   deleteTaskById(data.projectId, data.id)
       .then(() => {
         showMessage('Task is successfully deleted');
-        getAllTask();
+        fetchTaskList();
       })
       .catch(res => showMessage(res.message, 'error'))
-      .finally(() => loader.value = false)
-}
-
-function search(filter) {
-  loader.value = true;
-  getTasks(filter)
-      .then(res => items.value = res || [])
-      .catch(res => showMessage(res.message))
       .finally(() => loader.value = false)
 }
 
@@ -90,7 +107,7 @@ function search(filter) {
       </v-btn>
     </div>
 
-    <TaskFilter @search="search" />
+    <TaskFilter @search="fetchTaskList" :project-id="projectId" />
 
     <div class="mt-3">
       <v-data-table :headers="headers"

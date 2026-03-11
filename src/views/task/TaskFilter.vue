@@ -1,13 +1,14 @@
 <script setup>
 
-import {onMounted, ref, defineEmits} from "vue";
+import {onMounted, ref, defineEmits, defineProps, watch} from "vue";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
 import {formatDateLocal} from "@/utils/date";
 import {getProjects} from "@/services/project-service";
 
-const emit = defineEmits(['search'])
+const emit = defineEmits(['search']);
+const props = defineProps(['projectId'])
 
 const filterForm = ref({
   title: '',
@@ -22,7 +23,13 @@ const projects = ref([]);
 
 onMounted(() => {
   getTags().then(res => tags.value = res?.map(r => r.name) || []);
-  getProjects().then(res => projects.value = res || []);
+  getProjects().then(res => {
+    projects.value = res || [];
+  });
+});
+
+watch(() => props.projectId, () => {
+  filterForm.value.projectId = props.projectId || null
 });
 
 function search() {
@@ -36,7 +43,7 @@ function search() {
 }
 
 function clear() {
-  filterForm.value = {title: ''};
+  filterForm.value = {title: '', projectId: props.projectId || ''};
   emit('search', filterForm.value);
 }
 
@@ -90,13 +97,13 @@ function clear() {
 <v-row class="justify-end align-content-start">
   <v-col cols="4">
     <v-select
-        clearable
         label="Select"
         :items="projects"
         item-title="name"
         item-value="id"
         v-model="filterForm.projectId"
         variant="underlined"
+        :readonly="projectId"
     ></v-select>
   </v-col>
   <v-col class="d-flex justify-end align-center">

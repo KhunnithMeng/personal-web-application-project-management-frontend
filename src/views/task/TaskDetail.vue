@@ -17,6 +17,7 @@ const { showMessage } = useMessage();
 
 const taskId = ref(null);
 const projectId = ref(null);
+const isAllTask = ref(false);
 
 const tags = ref([]);
 const projects = ref([]);
@@ -37,14 +38,20 @@ onMounted(() => {
   getTags().then(res => tags.value = res || []);
   getProjects().then(res => projects.value = res || []);
 
-  projectId.value = route.params.projectId;
-  taskId.value = route.params.id;
+  isAllTask.value = route.query.isAllTask === 'true';
+  projectId.value = +route.params.projectId;
+  taskId.value = +route.params.id;
   if (taskId.value && projectId.value) {
     getTaskById(projectId.value, taskId.value).then(res => {
       task.value = { ...res, tagIds: res.tags?.map(t => t.id) }
     });
+    return;
   }
-})
+
+  if (projectId.value) {
+    task.value.projectId = projectId.value;
+  }
+});
 
 async function submit() {
   const { valid } = await form.value.validate();
@@ -65,7 +72,11 @@ function handleEditTask() {
   editTaskById(projectId.value, taskId.value, task.value)
       .then(() => {
         showMessage('Task is successfully edited');
-        router.push('/task');
+        if (isAllTask.value) {
+          router.push('/task');
+        } else {
+          router.push(`/project/${projectId.value}/task`)
+        }
       })
       .catch(res => showMessage(res.message, 'error'))
       .finally(() => loader.value = false);
@@ -76,7 +87,11 @@ function handleCreateTask() {
   createTask(task.value.projectId, task.value)
       .then(() => {
         showMessage('Task is successfully created');
-        router.push('/task');
+        if (projectId.value) {
+          router.push(`/project/${projectId.value}/task`);
+        } else {
+          router.push('/task');
+        }
       })
       .catch(res => showMessage(res.message, 'error'))
       .finally(() => loader.value = false);
@@ -117,7 +132,8 @@ function handleCreateTask() {
                       item-value="id"
                       v-model="task.projectId"
                       :rules="[v => !!v || 'Project is required']"
-                      :items="projects"></v-select>
+                      :items="projects"
+                      :readonly="projectId && !isAllTask"></v-select>
 
             <v-text-field placeholder="Title"
                           variant="underlined"
