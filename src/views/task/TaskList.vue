@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {deleteTaskById, getTasks} from "@/services/task-service";
+import {deleteTaskById, getTasks, getTasksByProjectId} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {formatDate} from "@/utils/date";
 import {router} from "@/router";
@@ -8,6 +8,7 @@ import {useMessage} from "@/composibles/useMessage";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
 import TaskFilter from "@/views/task/TaskFilter.vue";
+import {useRoute} from "vue-router";
 
 const headers = Object.freeze([
   { title: 'Title', key: 'title' },
@@ -26,22 +27,31 @@ const actions = [
 ];
 
 const { showMessage } = useMessage();
+const route = useRoute();
 
 const loader = ref(false);
 const items = ref([]);
+const projectId = ref(null);
 
 onMounted(() => {
-  loader.value = true;
-  getAllTask();
+  projectId.value = route.params.projectId;
+  fetchTaskList();
 });
 
-function getAllTask() {
-  getTasks()
-      .then(res => {
-        items.value = res;
-      })
-      .catch(err => console.error(err))
-      .finally(() => loader.value = false)
+function fetchTaskList(filter) {
+  if (projectId.value) {
+    loader.value = true;
+    getTasksByProjectId(projectId.value, filter)
+        .then(res => items.value = res || [])
+        .catch(err => console.log(err))
+        .finally(() => loader.value = false)
+  } else {
+    loader.value = true;
+    getTasks(filter)
+        .then(res => items.value = res || [])
+        .catch(err => console.error(err))
+        .finally(() => loader.value = false)
+  }
 }
 
 function create() {
@@ -63,17 +73,9 @@ function handleDeleteTask(data) {
   deleteTaskById(data.projectId, data.id)
       .then(() => {
         showMessage('Task is successfully deleted');
-        getAllTask();
+        fetchTaskList();
       })
       .catch(res => showMessage(res.message, 'error'))
-      .finally(() => loader.value = false)
-}
-
-function search(filter) {
-  loader.value = true;
-  getTasks(filter)
-      .then(res => items.value = res || [])
-      .catch(res => showMessage(res.message))
       .finally(() => loader.value = false)
 }
 
@@ -90,7 +92,7 @@ function search(filter) {
       </v-btn>
     </div>
 
-    <TaskFilter @search="search" />
+    <TaskFilter @search="fetchTaskList" />
 
     <div class="mt-3">
       <v-data-table :headers="headers"
