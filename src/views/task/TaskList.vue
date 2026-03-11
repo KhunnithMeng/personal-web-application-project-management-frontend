@@ -57,7 +57,11 @@ function fetchTaskList(filter) {
 }
 
 function create() {
-  router.push('/task/add');
+  if (projectId.value) {
+    router.push(`/project/${projectId.value}/task/add`);
+  } else {
+    router.push('/task/add')
+  }
 }
 
 function handleAction(action, data) {
