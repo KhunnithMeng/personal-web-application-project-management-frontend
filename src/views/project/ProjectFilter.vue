@@ -24,8 +24,8 @@ const filter = ref({
 });
 
 onMounted(() => {
-  getCategories().then(res => categories.value = res.map(r => r.name));
-  getTechStacks().then(res => techStacks.value = res.map(r => r.name));
+  getCategories().then(res => categories.value = res?.data.map(r => r.name));
+  getTechStacks().then(res => techStacks.value = res?.data.map(r => r.name));
 });
 
 function search() {
