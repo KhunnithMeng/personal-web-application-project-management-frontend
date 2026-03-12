@@ -43,7 +43,7 @@ function search() {
 }
 
 function clear() {
-  filterForm.value = {title: '', projectId: props.projectId || ''};
+  filterForm.value = {title: '', projectId: props.projectId || null};
   emit('search', filterForm.value);
 }
 
