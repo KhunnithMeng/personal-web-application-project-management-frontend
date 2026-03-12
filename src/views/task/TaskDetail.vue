@@ -35,15 +35,17 @@ const task = ref({
 });
 
 onMounted(() => {
-  getTags().then(res => tags.value = res || []);
-  getProjects().then(res => projects.value = res || []);
+  getTags().then(res => tags.value = res?.data || []);
+  getProjects().then(res => projects.value = res?.data || []);
 
   isAllTask.value = route.query.isAllTask === 'true';
   projectId.value = +route.params.projectId;
   taskId.value = +route.params.id;
   if (taskId.value && projectId.value) {
     getTaskById(projectId.value, taskId.value).then(res => {
-      task.value = { ...res, tagIds: res.tags?.map(t => t.id) }
+      if (res) {
+        task.value = { ...res.data, tagIds: res.data.tags?.map(t => t.id) }
+      }
     });
     return;
   }
