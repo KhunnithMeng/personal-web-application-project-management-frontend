@@ -1,5 +1,5 @@
 import http from '@/plugins/axios';
 
-export function getTechStacks() {
-    return http.get('/tech-stack')
+export function getTechStacks(params) {
+    return http.get('/tech-stack', { params: params || null })
 }
