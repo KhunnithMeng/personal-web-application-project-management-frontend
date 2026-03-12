@@ -78,20 +78,20 @@ function bindProjectToForm() {
   getProjectById(projectId.value).then(res => {
     if (res) {
       project.value = {
-        ...res,
-        techStackIds: res.techStack?.map(t => t.id) || [],
-        categoryId: res.category?.id || null
+        ...res.data,
+        techStackIds: res.data.techStack?.map(t => t.id) || [],
+        categoryId: res.data.category?.id || null
       }
     }
   }).finally(() => closeLoader())
 }
 
 function fetchTechStacks() {
-  getTechStacks().then(res => techStacks.value = res || []);
+  getTechStacks().then(res => techStacks.value = res?.data || []);
 }
 
 function fetchCategories() {
-  getCategories().then(res => categories.value = res || []);
+  getCategories().then(res => categories.value = res?.data || []);
 }
 
 </script>

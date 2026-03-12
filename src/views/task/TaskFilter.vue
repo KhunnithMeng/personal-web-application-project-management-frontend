@@ -22,9 +22,9 @@ const tags = ref([]);
 const projects = ref([]);
 
 onMounted(() => {
-  getTags().then(res => tags.value = res?.map(r => r.name) || []);
+  getTags().then(res => tags.value = res?.data.map(r => r.name) || []);
   getProjects().then(res => {
-    projects.value = res || [];
+    projects.value = res?.data || [];
   });
 });
 
@@ -43,7 +43,7 @@ function search() {
 }
 
 function clear() {
-  filterForm.value = {title: '', projectId: props.projectId || ''};
+  filterForm.value = {title: '', projectId: props.projectId || null};
   emit('search', filterForm.value);
 }
 

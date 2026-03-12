@@ -34,7 +34,7 @@ onMounted( () => {
 function fetchProjects() {
   loading.value = true;
   getProjects()
-      .then(res => items.value = res)
+      .then(res => items.value = res?.data || [])
       .catch(err => console.error(err))
       .finally(() => loading.value = false)
 }
@@ -60,7 +60,7 @@ function handleAction(action, data) {
 function search(value) {
   loading.value = true;
   getProjects(value)
-      .then((res) => items.value = res)
+      .then((res) => items.value = res?.data || [])
       .catch((err) => console.log(err))
       .finally(() => loading.value = false)
 }
