@@ -165,12 +165,14 @@ function handleCreateTask() {
                 <v-number-input label="Estimated Hours"
                                 variant="underlined"
                                 :min="0"
+                                :precision="null"
                                 v-model="task.estimatedHours"></v-number-input>
               </v-col>
               <v-col>
                 <v-number-input label="Actual Hours"
                                 variant="underlined"
                                 :min="0"
+                                :precision="null"
                                 v-model="task.actualHours"></v-number-input>
               </v-col>
             </v-row>
