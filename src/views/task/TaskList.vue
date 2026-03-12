@@ -44,13 +44,13 @@ function fetchTaskList(filter) {
   if (projectId.value) {
     loader.value = true;
     getTasksByProjectId(projectId.value, filter)
-        .then(res => items.value = res || [])
+        .then(res => items.value = res?.data || [])
         .catch(err => console.log(err))
         .finally(() => loader.value = false)
   } else {
     loader.value = true;
     getTasks(filter)
-        .then(res => items.value = res || [])
+        .then(res => items.value = res?.data || [])
         .catch(err => console.error(err))
         .finally(() => loader.value = false)
   }
@@ -86,8 +86,8 @@ function handleAction(action, data) {
 function handleDeleteTask(data) {
   loader.value = true;
   deleteTaskById(data.projectId, data.id)
-      .then(() => {
-        showMessage('Task is successfully deleted');
+      .then((res) => {
+        showMessage(res.message);
         fetchTaskList();
       })
       .catch(res => showMessage(res.message, 'error'))
