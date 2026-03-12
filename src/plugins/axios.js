@@ -25,7 +25,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use((response) => {
 
     if (response?.data && Boolean(response.data.data)) {
-        return response.data.data;
+        return response.data;
     }
 
     return response.data
