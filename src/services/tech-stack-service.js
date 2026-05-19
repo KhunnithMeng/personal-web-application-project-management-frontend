@@ -7,3 +7,7 @@ export function getTechStacks(params) {
 export function createTechStack(payload) {
     return http.post('/tech-stack', payload);
 }
+
+export function updateTechStack(id, payload) {
+    return http.put('/tech-stack/' + id, payload);
+}
