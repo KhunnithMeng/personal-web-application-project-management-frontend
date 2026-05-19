@@ -11,3 +11,7 @@ export function createTechStack(payload) {
 export function updateTechStack(id, payload) {
     return http.put('/tech-stack/' + id, payload);
 }
+
+export function deleteTechStack(id) {
+    return http.delete('/tech-stack/' + id);
+}

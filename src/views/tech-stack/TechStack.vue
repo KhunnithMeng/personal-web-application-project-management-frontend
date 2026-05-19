@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {createTechStack, getTechStacks, updateTechStack} from "@/services/tech-stack-service";
+import {createTechStack, deleteTechStack, getTechStacks, updateTechStack} from "@/services/tech-stack-service";
 import {useMessage} from "@/composibles/useMessage";
 import CrudFormDialog from "@/components/commons/CrudFormDialog.vue";
 
@@ -69,6 +69,17 @@ function handleAction(value, item) {
   if (value === 'edit') {
     dialogValue.value = { ...item };
     dialog.value = true;
+  }
+
+  if (value === 'delete') {
+    loading.value = true;
+    deleteTechStack(item.id)
+        .then((res) => {
+          showMessage(res.message);
+          loadTechStack({ page: page.value, itemsPerPage: itemsPerPage.value });
+        })
+        .catch(err => console.log(err))
+        .finally(() => loading.value = false)
   }
 }
 </script>
