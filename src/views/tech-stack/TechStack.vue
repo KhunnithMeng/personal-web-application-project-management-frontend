@@ -1,7 +1,8 @@
 <script setup>
 import {ref} from "vue";
-import {createTechStack, getTechStacks} from "@/services/tech-stack-service";
+import {createTechStack, getTechStacks, updateTechStack} from "@/services/tech-stack-service";
 import {useMessage} from "@/composibles/useMessage";
+import CrudFormDialog from "@/components/commons/CrudFormDialog.vue";
 
 const { showMessage } = useMessage()
 
@@ -15,6 +16,10 @@ const actions = [
   {name: 'Edit', icon: 'mdi-pencil', color: '', value: 'edit'},
   {name: 'Delete', icon: 'mdi-delete', color: 'red', value: 'delete'}
 ]
+const fields = [
+  { name: 'Name', key: 'name', type: 'text' },
+  { name: 'Description', key: 'description', type: 'textarea' }
+];
 
 const itemsPerPage = ref(10);
 const page = ref(1);
@@ -23,7 +28,7 @@ const totalTechStacks = ref(0);
 const loading = ref(false);
 
 const dialog = ref(false);
-const techStackForm = ref({ name: '', description: '' });
+const dialogValue = ref({});
 
 function loadTechStack({ page, itemsPerPage }) {
   loading.value = true;
@@ -40,9 +45,12 @@ function create() {
   dialog.value = true;
 }
 
-function save() {
+function save(techStack) {
   loading.value = true;
-  createTechStack(techStackForm.value)
+  const apiHandler = techStack.isEdit ?
+      updateTechStack(techStack.id, { name: techStack.name, description: techStack.description }) :
+      createTechStack(techStack);
+  apiHandler
       .then((res) => {
         if (res) {
           showMessage(res.message);
@@ -52,14 +60,16 @@ function save() {
       .catch(err => console.log(err))
       .finally(() => {
         loading.value = false;
-        techStackForm.value = { name: '', description: '' }
         dialog.value = false;
+        dialogValue.value = {};
       })
 }
 
 function handleAction(value, item) {
-  console.log(value, item)
-
+  if (value === 'edit') {
+    dialogValue.value = { ...item };
+    dialog.value = true;
+  }
 }
 </script>
 
@@ -69,44 +79,17 @@ function handleAction(value, item) {
       <h1>Tech Stack</h1>
 
       <span>
-        <v-dialog v-model="dialog" max-width="600">
-          <template v-slot:activator="{props: activatorProps}">
-            <v-btn text="Create Tech Stack"
-                   prepend-icon="mdi-plus"
-                   color="primary"
-                   v-bind="activatorProps"
-                   @click="create()"></v-btn>
-          </template>
+        <v-btn text="Create Tech Stack"
+               prepend-icon="mdi-plus"
+               color="primary"
+               @click="create()"></v-btn>
 
-          <v-card prepend-icon="mdi-list-box-outline"
-                  title="Create Tech Stack">
-            <v-card-text>
-              <v-row density="comfortable">
-                <v-col cols="12">
-                  <v-text-field label="Name"
-                                variant="underlined"
-                                v-model="techStackForm.name"
-                                :rules="[v => !!v || 'Name is required']"
-                                autocomplete="off"></v-text-field>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-textarea label="Description"
-                              autocomplete="off"
-                              v-model="techStackForm.description"
-                              counter></v-textarea>
-                </v-col>
-              </v-row>
-            </v-card-text>
-
-            <v-divider></v-divider>
-
-            <v-card-actions>
-              <v-btn text="Cancel" variant="plain" @click="dialog = false"></v-btn>
-              <v-btn text="Save" color="primary" variant="tonal" @click="save()"></v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <CrudFormDialog title="Tech Stack"
+                        v-model="dialog"
+                        :fields="fields"
+                        :dialog-value="dialogValue"
+                        @cancel="dialogValue = {}"
+                        @submit="save"></CrudFormDialog>
       </span>
     </div>
 
