@@ -3,11 +3,14 @@ import {ref} from "vue";
 import {createTechStack, deleteTechStack, getTechStacks, updateTechStack} from "@/services/tech-stack-service";
 import {useMessage} from "@/composibles/useMessage";
 import CrudFormDialog from "@/components/commons/CrudFormDialog.vue";
+import BaseServerTable from "@/components/commons/BaseServerTable.vue";
+import {useLoader} from "@/composibles/useLoader";
 
-const { showMessage } = useMessage()
+const { showMessage } = useMessage();
+const { openLoader, closeLoader } = useLoader();
 
 const headers = [
-  {title: 'ID', key: 'id'},
+  {title: 'No.', key: 'number'},
   {title: 'Name', key: 'name', align: 'start'},
   {title: 'Description', key: 'description', align: 'start'},
   {title: 'Action', key: 'action'}
@@ -21,24 +24,12 @@ const fields = [
   { name: 'Description', key: 'description', type: 'textarea' }
 ];
 
-const itemsPerPage = ref(10);
-const page = ref(1);
-const techStacks = ref([]);
-const totalTechStacks = ref(0);
-const loading = ref(false);
-
+const tableRef = ref(null);
 const dialog = ref(false);
 const dialogValue = ref({});
 
-function loadTechStack({ page, itemsPerPage }) {
-  loading.value = true;
-  getTechStacks({ page, itemsPerPage })
-      .then(res => {
-        techStacks.value = res.data || [];
-        totalTechStacks.value = res.total || 20;
-      })
-      .catch(err => console.error(err))
-      .finally(() => loading.value = false)
+function loadTechStack(payload) {
+  return getTechStacks(payload).catch(err => console.error(err));
 }
 
 function create() {
@@ -46,7 +37,7 @@ function create() {
 }
 
 function save(techStack) {
-  loading.value = true;
+  openLoader();
   const apiHandler = techStack.isEdit ?
       updateTechStack(techStack.id, { name: techStack.name, description: techStack.description }) :
       createTechStack(techStack);
@@ -54,12 +45,12 @@ function save(techStack) {
       .then((res) => {
         if (res) {
           showMessage(res.message);
-          loadTechStack({ page: page.value, itemsPerPage: itemsPerPage.value});
+          tableRef.value.reload();
         }
       })
       .catch(err => console.log(err))
       .finally(() => {
-        loading.value = false;
+        closeLoader();
         dialog.value = false;
         dialogValue.value = {};
       })
@@ -72,14 +63,14 @@ function handleAction(value, item) {
   }
 
   if (value === 'delete') {
-    loading.value = true;
+    openLoader();
     deleteTechStack(item.id)
         .then((res) => {
           showMessage(res.message);
-          loadTechStack({ page: page.value, itemsPerPage: itemsPerPage.value });
+          tableRef.value.reload();
         })
         .catch(err => console.log(err))
-        .finally(() => loading.value = false)
+        .finally(() => closeLoader())
   }
 }
 </script>
@@ -105,34 +96,12 @@ function handleAction(value, item) {
     </div>
 
     <div class="mt-3">
-      <v-data-table-server v-model:items-per-page="itemsPerPage"
-                           v-model:page="page"
-                           :items="techStacks"
-                           :items-length="totalTechStacks"
-                           :loading="loading"
-                           :headers="headers"
-                           @update:options="loadTechStack">
-
-        <template v-slot:[`item.action`]="{ item }">
-          <v-btn icon>
-            <v-icon>mdi-dots-vertical</v-icon>
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item v-for="(action, index) of actions"
-                             :key="index">
-                  <v-btn :prepend-icon="action.icon"
-                         class="w-100 justify-start"
-                         :color="action.color"
-                         @click="handleAction(action.value, item)">
-                    {{ action.name }}
-                  </v-btn>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-btn>
-        </template>
-
-      </v-data-table-server>
+      <BaseServerTable ref="tableRef"
+                       :fetcher="loadTechStack"
+                       :actions="actions"
+                       :headers="headers"
+                       @handle-action="handleAction">
+      </BaseServerTable>
     </div>
   </div>
 </template>
