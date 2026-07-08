@@ -87,11 +87,11 @@ function bindProjectToForm() {
 }
 
 function fetchTechStacks() {
-  getTechStacks({ itemPerPage: 0 }).then(res => techStacks.value = res?.data || []);
+  getTechStacks({ itemsPerPage: 0 }).then(res => techStacks.value = res?.data || []);
 }
 
 function fetchCategories() {
-  getCategories().then(res => categories.value = res?.data || []);
+  getCategories({ itemsPerPage: 0 }).then(res => categories.value = res?.data || []);
 }
 
 </script>
