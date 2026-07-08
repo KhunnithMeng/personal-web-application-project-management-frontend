@@ -87,7 +87,7 @@ function bindProjectToForm() {
 }
 
 function fetchTechStacks() {
-  getTechStacks().then(res => techStacks.value = res?.data || []);
+  getTechStacks({ itemPerPage: 0 }).then(res => techStacks.value = res?.data || []);
 }
 
 function fetchCategories() {
