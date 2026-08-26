@@ -134,7 +134,7 @@ function handleDeleteTask(data) {
 
     <TaskFilter @search="fetchTaskList" :project-id="projectId" />
 
-    <div class="mt-3">
+    <div class="mt-5">
       <v-data-table :headers="headers"
                     :items="items"
                     :loading="loader">
