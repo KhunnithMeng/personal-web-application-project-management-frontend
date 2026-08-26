@@ -11,22 +11,22 @@ import TaskFilter from "@/views/task/TaskFilter.vue";
 import {useRoute} from "vue-router";
 
 const headers = Object.freeze([
-  { title: 'Title', key: 'title' },
-  { title: 'Status', key: 'status' },
-  { title: 'Priority', key: 'priority' },
-  { title: 'Deadline', key: 'deadline' },
-  { title: 'Estimated Hours', key: 'estimatedHours' },
-  { title: 'Actual Hours', key: 'actualHours' },
-  { title: 'Tags', key: 'tags' },
-  { title: 'Description', key: 'description' },
-  { title: 'Action', key: 'action' },
+  {title: 'Title', key: 'title'},
+  {title: 'Status', key: 'status'},
+  {title: 'Priority', key: 'priority'},
+  {title: 'Deadline', key: 'deadline'},
+  {title: 'Estimated Hours', key: 'estimatedHours'},
+  {title: 'Actual Hours', key: 'actualHours'},
+  {title: 'Tags', key: 'tags'},
+  {title: 'Description', key: 'description'},
+  {title: 'Action', key: 'action'},
 ]);
 const actions = [
   {name: 'Edit', icon: 'mdi-pencil', color: '', value: 'edit'},
   {name: 'Delete', icon: 'mdi-delete', color: 'red', value: 'delete'}
 ];
 
-const { showMessage } = useMessage();
+const {showMessage} = useMessage();
 const route = useRoute();
 
 const loader = ref(false);
@@ -70,7 +70,7 @@ function handleAction(action, data) {
       router.push(`/project/${data.projectId}/task/edit/${data.id}`);
     } else {
       router.push({
-        path: '/project/'+ data.projectId +'/task/edit/' + data.id,
+        path: '/project/' + data.projectId + '/task/edit/' + data.id,
         query: {
           isAllTask: true
         }
@@ -132,7 +132,7 @@ function handleDeleteTask(data) {
       </v-sheet>
     </div>
 
-    <TaskFilter @search="fetchTaskList" :project-id="projectId" />
+    <TaskFilter @search="fetchTaskList" :project-id="projectId"/>
 
     <div class="mt-5">
       <v-data-table :headers="headers"
@@ -140,13 +140,15 @@ function handleDeleteTask(data) {
                     :loading="loader">
         <template v-slot:[`item.status`]="{ value }">
           <v-chip :color="TASK_STATUSES.find(t => t.value === value)?.color"
-                  variant="elevated"> {{ TASK_STATUSES.find(t => t.value === value)?.title }} </v-chip>
+                  variant="tonal"> {{ TASK_STATUSES.find(t => t.value === value)?.title }}
+          </v-chip>
         </template>
 
         <template v-slot:[`item.priority`]="{ value }">
           <v-chip :color="TASK_PRIORITY.find(t => t.value === value)?.color"
                   :prepend-icon="TASK_PRIORITY.find(t => t.value === value)?.icon"
-                  variant="text"> {{ TASK_PRIORITY.find(t => t.value === value)?.title }} </v-chip>
+                  variant="text"> {{ TASK_PRIORITY.find(t => t.value === value)?.title }}
+          </v-chip>
         </template>
 
         <template v-slot:[`item.deadline`]="{ value }">
@@ -162,11 +164,13 @@ function handleDeleteTask(data) {
         </template>
 
         <template v-slot:[`item.tags`]="{ value }">
-          <v-chip-group column>
-            <v-chip v-for="tag of value" :key="tag.id">
-              {{ tag.name }}
-            </v-chip>
-          </v-chip-group>
+          <v-chip v-for="tag of value"
+                  :key="tag.id"
+                  variant="outlined"
+                  class="ma-1"
+                  size="small">
+            {{ tag.name }}
+          </v-chip>
         </template>
 
         <template v-slot:[`item.description`]="{ value }">
@@ -179,7 +183,7 @@ function handleDeleteTask(data) {
             <v-menu activator="parent">
               <v-list>
                 <v-list-item v-for="(action, index) of actions"
-                             :key="index" >
+                             :key="index">
                   <v-btn :prepend-icon="action.icon"
                          class="w-100 justify-start"
                          :color="action.color"
