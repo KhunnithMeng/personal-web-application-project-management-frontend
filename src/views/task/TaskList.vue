@@ -98,13 +98,38 @@ function handleDeleteTask(data) {
 
 <template>
   <div class="ma-5">
-    <div class="d-flex justify-space-between align-center">
-      <h1>Task</h1>
+    <div class="d-flex justify-space-between align-center mb-5">
+      <div>
+        <h1>Tasks</h1>
+        <p>5 tasks · 1 blocked needs attention</p>
+      </div>
 
       <v-btn color="primary"
              prepend-icon="mdi-plus-thick" @click="create()">
         Create Task
       </v-btn>
+    </div>
+
+    <div class="d-flex flex-row justify-start align-center ga-3 mb-5">
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>TO DO</span>
+        <h3 class="text-yellow">1</h3>
+      </v-sheet>
+
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>IN PROGRESS</span>
+        <h3 class="text-blue">1</h3>
+      </v-sheet>
+
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>COMPLETED</span>
+        <h3 class="text-green">1</h3>
+      </v-sheet>
+
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>BLOCKED</span>
+        <h3 class="text-red">1</h3>
+      </v-sheet>
     </div>
 
     <TaskFilter @search="fetchTaskList" :project-id="projectId" />
