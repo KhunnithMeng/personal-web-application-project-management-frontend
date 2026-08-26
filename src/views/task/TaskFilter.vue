@@ -50,11 +50,11 @@ function clear() {
 </script>
 
 <template>
-  <v-sheet rounded border color="surface" class="pa-4">
-    <v-row dense>
+  <v-sheet rounded border color="surface" class="pa-5">
+    <v-row dense class="mb-5">
       <h3 class="mr-2">Filters</h3> <v-chip size="small" color="primary" variant="elevated">1 Active</v-chip>
     </v-row>
-    <v-row>
+    <v-row no-gutters class="ga-2">
       <v-col>
         <v-text-field label="Title"
                       name="title"
@@ -98,7 +98,7 @@ function clear() {
                   v-model="filterForm.tags"></v-select>
       </v-col>
     </v-row>
-    <v-row class="justify-start align-content-start">
+    <v-row no-gutters class="justify-start align-content-start">
       <v-col cols="4">
         <v-select
             label="Select"
