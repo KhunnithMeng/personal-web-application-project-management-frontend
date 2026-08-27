@@ -2,13 +2,14 @@
 import {onMounted, ref, watch} from "vue";
 import {deleteTaskById, getTasks, getTasksByProjectId} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
-import {formatDate} from "@/utils/date";
 import {router} from "@/router";
 import {useMessage} from "@/composibles/useMessage";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
-import TaskFilter from "@/views/task/TaskFilter.vue";
+import TaskFilter from "@/views/task/components/TaskFilter.vue";
 import {useRoute} from "vue-router";
+import TaskDeadLine from "@/views/task/components/TaskDeadLine.vue";
+import {formatDate} from "../../utils/date";
 
 const headers = Object.freeze([
   {title: 'Title', key: 'title'},
@@ -152,7 +153,7 @@ function handleDeleteTask(data) {
         </template>
 
         <template v-slot:[`item.deadline`]="{ value }">
-          {{ formatDate(value) }}
+          <TaskDeadLine :task="value"></TaskDeadLine>
         </template>
 
         <template v-slot:[`item.estimatedHours`]="{ value }">
