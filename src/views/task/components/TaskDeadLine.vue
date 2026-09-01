@@ -25,8 +25,13 @@ onMounted(() => {
 
 <template>
   <div class="d-flex flex-row">
-    <span class="text-amber">{{ date.month }} {{ date.day }} </span> {{ date.year }}
-    <v-chip class="d-inline" size="x-small" variant="elevated" color="amber">Soon</v-chip>
+    <span class="text-amber mr-1">{{ date.month }} {{ date.day }} </span> {{ date.year }}
+    <v-chip class="d-inline d-flex justify-center align-center ml-1"
+            size="x-small"
+            variant="elevated"
+            color="amber">
+      Soon
+    </v-chip>
   </div>
 
 </template>
