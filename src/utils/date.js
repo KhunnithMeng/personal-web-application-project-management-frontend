@@ -10,3 +10,15 @@ export function formatDateLocal(date) {
 
    return `${year}-${month}-${day}`;
 }
+
+/**
+ * Get number of days between 2 given dates
+ * @param firstDate
+ * @param secondDate
+ */
+export function getDaysBetweenDates(firstDate, secondDate) {
+   const firstDateDays = new Date(firstDate)
+   const secondDateDays = new Date(secondDate)
+   const differenceInMs = Math.abs(firstDateDays - secondDateDays);
+   return Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+}
