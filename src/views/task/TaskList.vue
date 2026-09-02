@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
-import {deleteTaskById, getTasks, getTasksByProjectId} from "@/services/task-service";
+import {taskService} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {router} from "@/router";
 import {useMessage} from "@/composibles/useMessage";
@@ -43,13 +43,13 @@ function fetchTaskList(filter) {
   projectId.value = route.params.projectId ? +route.params.projectId : 0;
   if (projectId.value) {
     loader.value = true;
-    getTasksByProjectId(projectId.value, filter)
+    taskService.getTaskByProjectId(projectId.value, filter)
         .then(res => items.value = res?.data || [])
         .catch(err => console.log(err))
         .finally(() => loader.value = false)
   } else {
     loader.value = true;
-    getTasks(filter)
+    taskService.getTasks(filter)
         .then(res => items.value = res?.data || [])
         .catch(err => console.error(err))
         .finally(() => loader.value = false)
@@ -85,7 +85,7 @@ function handleAction(action, data) {
 
 function handleDeleteTask(data) {
   loader.value = true;
-  deleteTaskById(data.projectId, data.id)
+  taskService.deleteTaskById(data.projectId, data.id)
       .then((res) => {
         showMessage(res.message);
         fetchTaskList();

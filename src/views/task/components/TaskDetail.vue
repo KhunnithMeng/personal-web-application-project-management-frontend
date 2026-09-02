@@ -7,7 +7,7 @@ import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
 import {getProjects} from "@/services/project-service";
 import {useLoader} from "@/composibles/useLoader";
-import {createTask, editTaskById, getTaskById} from "@/services/task-service";
+import {taskService} from "@/services/task-service";
 import {useMessage} from "@/composibles/useMessage";
 import {useRoute} from "vue-router";
 
@@ -42,7 +42,7 @@ onMounted(() => {
   projectId.value = +route.params.projectId;
   taskId.value = +route.params.id;
   if (taskId.value && projectId.value) {
-    getTaskById(projectId.value, taskId.value).then(res => {
+    taskService.getTaskById(projectId.value, taskId.value).then(res => {
       if (res) {
         task.value = { ...res.data, tagIds: res.data.tags?.map(t => t.id) }
       }
@@ -71,7 +71,7 @@ async function submit() {
 
 function handleEditTask() {
   loader.value = true;
-  editTaskById(projectId.value, taskId.value, task.value)
+  taskService.updateTaskById(projectId.value, taskId.value, task.value)
       .then(() => {
         showMessage('Task is successfully edited');
         if (isAllTask.value) {
@@ -86,7 +86,7 @@ function handleEditTask() {
 
 function handleCreateTask() {
   loader.value = true;
-  createTask(task.value.projectId, task.value)
+  taskService.createTask(task.value.projectId, task.value)
       .then(() => {
         showMessage('Task is successfully created');
         if (projectId.value) {
