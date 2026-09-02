@@ -14,7 +14,7 @@ const headers = Object.freeze([
   {title: 'Title', key: 'title'},
   {title: 'Status', key: 'status'},
   {title: 'Priority', key: 'priority'},
-  {title: 'Deadline', key: 'deadline'},
+  {title: 'Deadline', key: 'deadline', width: '11rem'},
   {title: 'Estimated Hours', key: 'estimatedHours'},
   {title: 'Actual Hours', key: 'actualHours'},
   {title: 'Tags', key: 'tags'},

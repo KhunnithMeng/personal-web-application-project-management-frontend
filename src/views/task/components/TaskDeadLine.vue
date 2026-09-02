@@ -42,19 +42,17 @@ onMounted(() => {
   <div class="mr-1 align-center"
        :class="{'text-amber': isDeadlineSoon, 'text-red': isDeadline}">
     {{ date.month }} {{ date.day }}
-    <span class="text-white">{{ date.year }}</span>
+    <span class="text-white mr-1">{{ date.year }}</span>
     <template v-if="isDeadlineSoon || isDeadline">
       <v-chip v-if="isDeadlineSoon"
               size="x-small"
               variant="tonal"
-              class="ml-1"
               color="amber">
         Soon
       </v-chip>
       <v-chip v-else-if="isDeadline"
               size="x-small"
               variant="tonal"
-              class="ml-1"
               color="red">
         Overdue
       </v-chip>
