@@ -22,3 +22,18 @@ export function getDaysBetweenDates(firstDate, secondDate) {
    const differenceInMs = Math.abs(firstDateDays - secondDateDays);
    return Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
 }
+
+/**
+ * Format iso string date to normal date
+ * @param date
+ */
+export function getDateOnly(date) {
+   if (!date) return;
+
+   const formattedDate = new Date(date);
+   const year = formattedDate.getFullYear();
+   const month = String((formattedDate.getMonth() + 1)).padStart(2, '0');
+   const day = String(formattedDate.getDate()).padStart(2, '0');
+
+   return `${year}-${month}-${day}`;
+}

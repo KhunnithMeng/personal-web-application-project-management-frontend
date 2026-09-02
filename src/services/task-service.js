@@ -1,4 +1,5 @@
 import http from '@/plugins/axios';
+import {getDateOnly} from "@/utils/date";
 
 export const taskService = {
     getTasks(params) {
@@ -10,7 +11,10 @@ export const taskService = {
     },
 
     createTask(projectId, data) {
-        return http.post('/project/'+ projectId +'/task', data)
+        return http.post('/project/'+ projectId +'/task', {
+            ...data,
+            deadline: getDateOnly(data.deadline)
+        })
     },
 
     getTaskById(projectId, taskId) {
@@ -18,7 +22,10 @@ export const taskService = {
     },
 
     updateTaskById(projectId, taskId, data) {
-        return http.put(`/project/${projectId}/task/${taskId}`, data)
+        return http.put(`/project/${projectId}/task/${taskId}`, {
+            ...data,
+            deadline: getDateOnly(data.deadline)
+        })
     },
 
     deleteTaskById(projectId, taskId) {
