@@ -9,14 +9,14 @@ import {TASK_PRIORITY} from "@/constants/taskPriority";
 import TaskFilter from "@/views/task/components/TaskFilter.vue";
 import {useRoute} from "vue-router";
 import TaskDeadLine from "@/views/task/components/TaskDeadLine.vue";
+import TaskHoursProgressBar from "@/views/task/components/TaskHoursProgressBar.vue";
 
 const headers = Object.freeze([
   {title: 'Title', key: 'title'},
   {title: 'Status', key: 'status'},
   {title: 'Priority', key: 'priority'},
   {title: 'Deadline', key: 'deadline', width: '11rem'},
-  {title: 'Estimated Hours', key: 'estimatedHours'},
-  {title: 'Actual Hours', key: 'actualHours'},
+  {title: 'Hours (Est. / Actual)', key: 'estimatedHours'},
   {title: 'Tags', key: 'tags'},
   {title: 'Description', key: 'description'},
   {title: 'Action', key: 'action'},
@@ -155,12 +155,9 @@ function handleDeleteTask(data) {
           <TaskDeadLine :deadline="value"></TaskDeadLine>
         </template>
 
-        <template v-slot:[`item.estimatedHours`]="{ value }">
-          {{ value }} Hours
-        </template>
-
-        <template v-slot:[`item.actualHours`]="{ value }">
-          {{ value }} Hours
+        <template v-slot:[`item.estimatedHours`]="{ item }">
+          <TaskHoursProgressBar v-if="item"
+                                :task="item"></TaskHoursProgressBar>
         </template>
 
         <template v-slot:[`item.tags`]="{ value }">
