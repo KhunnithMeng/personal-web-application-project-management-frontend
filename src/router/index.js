@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from "vue-router";
 import ProjectList from "@/views/project/ProjectList.vue";
 import TaskList from "@/views/task/TaskList.vue";
 import ProjectDetail from "@/views/project/ProjectDetail.vue";
-import TaskDetail from "@/views/task/TaskDetail.vue";
+import TaskDetail from "@/views/task/components/TaskDetail.vue";
 import TechStack from "@/views/tech-stack/TechStack.vue";
 
 const routes = [

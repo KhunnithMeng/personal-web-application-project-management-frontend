@@ -1,32 +1,32 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
-import {deleteTaskById, getTasks, getTasksByProjectId} from "@/services/task-service";
+import {taskService} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
-import {formatDate} from "@/utils/date";
 import {router} from "@/router";
 import {useMessage} from "@/composibles/useMessage";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
-import TaskFilter from "@/views/task/TaskFilter.vue";
+import TaskFilter from "@/views/task/components/TaskFilter.vue";
 import {useRoute} from "vue-router";
+import TaskDeadLine from "@/views/task/components/TaskDeadLine.vue";
 
 const headers = Object.freeze([
-  { title: 'Title', key: 'title' },
-  { title: 'Status', key: 'status' },
-  { title: 'Priority', key: 'priority' },
-  { title: 'Deadline', key: 'deadline' },
-  { title: 'Estimated Hours', key: 'estimatedHours' },
-  { title: 'Actual Hours', key: 'actualHours' },
-  { title: 'Tags', key: 'tags' },
-  { title: 'Description', key: 'description' },
-  { title: 'Action', key: 'action' },
+  {title: 'Title', key: 'title'},
+  {title: 'Status', key: 'status'},
+  {title: 'Priority', key: 'priority'},
+  {title: 'Deadline', key: 'deadline', width: '11rem'},
+  {title: 'Estimated Hours', key: 'estimatedHours'},
+  {title: 'Actual Hours', key: 'actualHours'},
+  {title: 'Tags', key: 'tags'},
+  {title: 'Description', key: 'description'},
+  {title: 'Action', key: 'action'},
 ]);
 const actions = [
   {name: 'Edit', icon: 'mdi-pencil', color: '', value: 'edit'},
   {name: 'Delete', icon: 'mdi-delete', color: 'red', value: 'delete'}
 ];
 
-const { showMessage } = useMessage();
+const {showMessage} = useMessage();
 const route = useRoute();
 
 const loader = ref(false);
@@ -43,13 +43,13 @@ function fetchTaskList(filter) {
   projectId.value = route.params.projectId ? +route.params.projectId : 0;
   if (projectId.value) {
     loader.value = true;
-    getTasksByProjectId(projectId.value, filter)
+    taskService.getTaskByProjectId(projectId.value, filter)
         .then(res => items.value = res?.data || [])
         .catch(err => console.log(err))
         .finally(() => loader.value = false)
   } else {
     loader.value = true;
-    getTasks(filter)
+    taskService.getTasks(filter)
         .then(res => items.value = res?.data || [])
         .catch(err => console.error(err))
         .finally(() => loader.value = false)
@@ -70,7 +70,7 @@ function handleAction(action, data) {
       router.push(`/project/${data.projectId}/task/edit/${data.id}`);
     } else {
       router.push({
-        path: '/project/'+ data.projectId +'/task/edit/' + data.id,
+        path: '/project/' + data.projectId + '/task/edit/' + data.id,
         query: {
           isAllTask: true
         }
@@ -85,7 +85,7 @@ function handleAction(action, data) {
 
 function handleDeleteTask(data) {
   loader.value = true;
-  deleteTaskById(data.projectId, data.id)
+  taskService.deleteTaskById(data.projectId, data.id)
       .then((res) => {
         showMessage(res.message);
         fetchTaskList();
@@ -98,8 +98,11 @@ function handleDeleteTask(data) {
 
 <template>
   <div class="ma-5">
-    <div class="d-flex justify-space-between align-center">
-      <h1>Task</h1>
+    <div class="d-flex justify-space-between align-center mb-5">
+      <div>
+        <h1>Tasks</h1>
+        <p>5 tasks · 1 blocked needs attention</p>
+      </div>
 
       <v-btn color="primary"
              prepend-icon="mdi-plus-thick" @click="create()">
@@ -107,25 +110,49 @@ function handleDeleteTask(data) {
       </v-btn>
     </div>
 
-    <TaskFilter @search="fetchTaskList" :project-id="projectId" />
+    <div class="d-flex flex-row justify-start align-center ga-3 mb-5">
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>TO DO</span>
+        <h3 class="text-yellow">1</h3>
+      </v-sheet>
 
-    <div class="mt-3">
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>IN PROGRESS</span>
+        <h3 class="text-blue">1</h3>
+      </v-sheet>
+
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>COMPLETED</span>
+        <h3 class="text-green">1</h3>
+      </v-sheet>
+
+      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+        <span>BLOCKED</span>
+        <h3 class="text-red">1</h3>
+      </v-sheet>
+    </div>
+
+    <TaskFilter @search="fetchTaskList" :project-id="projectId"/>
+
+    <div class="mt-5">
       <v-data-table :headers="headers"
                     :items="items"
                     :loading="loader">
         <template v-slot:[`item.status`]="{ value }">
           <v-chip :color="TASK_STATUSES.find(t => t.value === value)?.color"
-                  variant="elevated"> {{ TASK_STATUSES.find(t => t.value === value)?.title }} </v-chip>
+                  variant="tonal"> {{ TASK_STATUSES.find(t => t.value === value)?.title }}
+          </v-chip>
         </template>
 
         <template v-slot:[`item.priority`]="{ value }">
           <v-chip :color="TASK_PRIORITY.find(t => t.value === value)?.color"
                   :prepend-icon="TASK_PRIORITY.find(t => t.value === value)?.icon"
-                  variant="text"> {{ TASK_PRIORITY.find(t => t.value === value)?.title }} </v-chip>
+                  variant="text"> {{ TASK_PRIORITY.find(t => t.value === value)?.title }}
+          </v-chip>
         </template>
 
         <template v-slot:[`item.deadline`]="{ value }">
-          {{ formatDate(value) }}
+          <TaskDeadLine :deadline="value"></TaskDeadLine>
         </template>
 
         <template v-slot:[`item.estimatedHours`]="{ value }">
@@ -137,11 +164,13 @@ function handleDeleteTask(data) {
         </template>
 
         <template v-slot:[`item.tags`]="{ value }">
-          <v-chip-group column>
-            <v-chip v-for="tag of value" :key="tag.id">
-              {{ tag.name }}
-            </v-chip>
-          </v-chip-group>
+          <v-chip v-for="tag of value"
+                  :key="tag.id"
+                  variant="outlined"
+                  class="ma-1"
+                  size="small">
+            {{ tag.name }}
+          </v-chip>
         </template>
 
         <template v-slot:[`item.description`]="{ value }">
@@ -154,7 +183,7 @@ function handleDeleteTask(data) {
             <v-menu activator="parent">
               <v-list>
                 <v-list-item v-for="(action, index) of actions"
-                             :key="index" >
+                             :key="index">
                   <v-btn :prepend-icon="action.icon"
                          class="w-100 justify-start"
                          :color="action.color"
