@@ -4,7 +4,7 @@ import TruncateText from "@/components/commons/TruncateText.vue";
 import {formatDate} from "../../utils/date";
 import {deleteProjectId, getProjects} from "@/services/project-service";
 import {router} from "@/router";
-import ProjectFilter from "@/views/project/ProjectFilter.vue";
+import ProjectFilter from "@/views/project/components/ProjectFilter.vue";
 import {PROJECT_STATUSES} from "@/constants/projectStatus";
 
 const headers = Object.freeze([
