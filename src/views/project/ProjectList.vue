@@ -69,7 +69,7 @@ function search(value) {
 
 <template>
   <div class="ma-5">
-    <div class="d-flex justify-space-between align-center">
+    <div class="d-flex justify-space-between align-center mb-5">
       <h1>Project</h1>
 
       <v-btn color="primary"
@@ -79,9 +79,9 @@ function search(value) {
       </v-btn>
     </div>
 
-    <ProjectFilter @search="search" />
+    <ProjectFilter @search="search"/>
 
-    <div class="mt-3">
+    <div class="mt-5">
       <v-data-table :items="items" :headers="headers" :loading="loading">
         <template v-slot:[`item.description`]="{ value }">
           <TruncateText :text="value"></TruncateText>

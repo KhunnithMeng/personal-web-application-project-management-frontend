@@ -40,56 +40,74 @@ function clear() {
 </script>
 
 <template>
-<div>
-  <div class="d-flex flex-row flex-wrap ga-5">
-    <v-text-field label="Name"
-                  autocomplete="off"
-                  v-model="filter.name"
-                  variant="underlined"></v-text-field>
-
-    <v-select label="Status"
-              :items="statusList"
-              item-title="name"
-              item-value="value"
-              variant="underlined"
-              v-model="filter.status"></v-select>
-
-    <v-date-input prepend-icon=""
-                  prepend-inner-icon="$calendar"
-                  label="Start Date"
-                  v-model="filter.startDate"
-                  persistent-placeholder
-                  variant="underlined"
-                  autocomplete="off"></v-date-input>
-
-    <v-date-input prepend-icon=""
-                  prepend-inner-icon="$calendar"
-                  label="End Date"
-                  v-model="filter.endDate"
-                  persistent-placeholder
-                  variant="underlined"
-                  autocomplete="off"></v-date-input>
-
-    <v-autocomplete variant="underlined"
-                    placeholder="Category"
-                    :items="categories"
+<v-sheet border rounded color="surface" class="pa-5">
+  <v-row no-gutters>
+    <v-row dense class="mb-5">
+      <h3 class="mr-2">Filters</h3> <v-chip size="small" color="primary" variant="elevated">1 Active</v-chip>
+    </v-row>
+  </v-row>
+  <v-row no-gutters class="ga-5">
+    <v-col>
+      <v-text-field label="Name"
                     autocomplete="off"
-                    v-model="filter.category"
-                    clearable></v-autocomplete>
+                    v-model="filter.name"
+                    variant="outlined"></v-text-field>
+    </v-col>
 
-    <v-select label="Tech Stack"
-              :items="techStacks"
-              variant="underlined"
-              v-model="filter.techStack"></v-select>
-  </div>
+    <v-col>
+      <v-select label="Status"
+                :items="statusList"
+                item-title="name"
+                item-value="value"
+                variant="outlined"
+                v-model="filter.status"></v-select>
+    </v-col>
 
-  <div class="d-flex justify-end">
+    <v-col>
+      <v-date-input prepend-icon=""
+                    prepend-inner-icon="$calendar"
+                    label="Start Date"
+                    v-model="filter.startDate"
+                    persistent-placeholder
+                    variant="outlined"
+                    autocomplete="off"></v-date-input>
+    </v-col>
+
+    <v-col>
+      <v-date-input prepend-icon=""
+                    prepend-inner-icon="$calendar"
+                    label="End Date"
+                    v-model="filter.endDate"
+                    persistent-placeholder
+                    variant="outlined"
+                    autocomplete="off"></v-date-input>
+    </v-col>
+
+    <v-col>
+      <v-autocomplete variant="outlined"
+                      placeholder="Category"
+                      :items="categories"
+                      autocomplete="off"
+                      v-model="filter.category"
+                      clearable></v-autocomplete>
+    </v-col>
+
+    <v-col>
+      <v-select label="Tech Stack"
+                :items="techStacks"
+                variant="outlined"
+                v-model="filter.techStack"></v-select>
+    </v-col>
+
+  </v-row>
+
+  <v-row dense class="d-flex justify-start">
     <v-btn prepend-icon="mdi-magnify"
            color="primary"
            class="mr-2" @click="search()">Search</v-btn>
     <v-btn prepend-icon="mdi-broom"
            color="secondary"
            @click="clear()">Clear</v-btn>
-  </div>
-</div>
+  </v-row>
+</v-sheet>
 </template>
