@@ -1,11 +1,11 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import TruncateText from "@/components/commons/TruncateText.vue";
-import {formatDate} from "../../utils/date";
 import {deleteProjectId, getProjects} from "@/services/project-service";
 import {router} from "@/router";
 import ProjectFilter from "@/views/project/components/ProjectFilter.vue";
 import {PROJECT_STATUSES} from "@/constants/projectStatus";
+import ProjectDateDisplay from "@/views/project/components/ProjectDateDisplay.vue";
 
 const headers = Object.freeze([
   {title: 'Title', key: 'name'},
@@ -98,12 +98,12 @@ function search(value) {
         </template>
 
         <template v-slot:[`item.startDate`]="{ value }">
-          {{ formatDate(value) }}
+          <ProjectDateDisplay :date="value"></ProjectDateDisplay>
         </template>
 
 
         <template v-slot:[`item.endDate`]="{ value }">
-          {{ formatDate(value) }}
+          <ProjectDateDisplay :date="value"></ProjectDateDisplay>
         </template>
 
 
