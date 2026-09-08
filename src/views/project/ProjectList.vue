@@ -91,7 +91,7 @@ function search(value) {
         </template>
 
         <template v-slot:[`item.status`]="{ value }">
-          <v-chip variant="flat"
+          <v-chip variant="tonal"
                   :color="PROJECT_STATUSES.find(s => s.value === value)?.color">
             {{ PROJECT_STATUSES.find(s => s.value === value)?.name }}
           </v-chip>
@@ -108,11 +108,11 @@ function search(value) {
 
 
         <template v-slot:[`item.techStack`]="{ value }">
-          <v-chip-group column>
-            <v-chip v-for="techStack of value" :key="techStack">
+            <v-chip v-for="techStack of value"
+                    class="ma-1"
+                    :key="techStack.id">
               {{ techStack.name }}
             </v-chip>
-          </v-chip-group>
         </template>
 
         <template v-slot:[`item.category`]="{ value }">
