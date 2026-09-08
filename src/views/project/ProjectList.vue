@@ -70,7 +70,10 @@ function search(value) {
 <template>
   <div class="ma-5">
     <div class="d-flex justify-space-between align-center mb-5">
-      <h1>Project</h1>
+      <div>
+        <h1>Project</h1>
+        <p>7 projects · 3 active · updated moments ago</p>
+      </div>
 
       <v-btn color="primary"
              prepend-icon="mdi-plus-thick"
