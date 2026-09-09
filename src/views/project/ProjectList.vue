@@ -65,6 +65,12 @@ function search(value) {
       .finally(() => loading.value = false)
 }
 
+function getRowProps({ item }) {
+  return {
+    class: `row-accent row-accent--${item.status}`
+  }
+}
+
 </script>
 
 <template>
@@ -85,7 +91,10 @@ function search(value) {
     <ProjectFilter @search="search"/>
 
     <div class="mt-5">
-      <v-data-table :items="items" :headers="headers" :loading="loading">
+      <v-data-table :items="items"
+                    :headers="headers"
+                    :loading="loading"
+                    :row-props="getRowProps">
         <template v-slot:[`item.description`]="{ value }">
           <TruncateText :text="value"></TruncateText>
         </template>
@@ -143,5 +152,14 @@ function search(value) {
 </template>
 
 <style scoped>
+
+:deep(.row-accent)  {
+  box-shadow: inset 3px 0 0 var(--row-accent-color);
+}
+
+:deep(.row-accent--planning) { --row-accent-color: #FDD835; }
+:deep(.row-accent--active) { --row-accent-color: #039BE5; }
+:deep(.row-accent--complete) { --row-accent-color: #66BB6A; }
+:deep(.row-accent--waiting) { --row-accent-color: #FB8C00; }
 
 </style>
