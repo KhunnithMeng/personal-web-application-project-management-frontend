@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {taskService} from "@/services/task-service";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {router} from "@/router";
@@ -38,6 +38,20 @@ onMounted(() => {
 });
 
 watch(() => route.params.projectId, fetchTaskList);
+
+const filterResultAmount = computed(() => {
+  return items.value.length
+});
+const statusAmountByType = computed(() => {
+  const getStatusAmountByType = (type) =>
+      items.value.filter(item => item.status === type).length;
+  return {
+    todo: getStatusAmountByType('todo'),
+    inprogress: getStatusAmountByType('inprogress'),
+    completed: getStatusAmountByType('completed'),
+    blocked: getStatusAmountByType('blocked')
+  }
+})
 
 function fetchTaskList(filter) {
   projectId.value = route.params.projectId ? +route.params.projectId : 0;
@@ -101,7 +115,7 @@ function handleDeleteTask(data) {
     <div class="d-flex justify-space-between align-center mb-5">
       <div>
         <h1>Tasks</h1>
-        <p>5 tasks · 1 blocked needs attention</p>
+        <p>{{ filterResultAmount }} tasks · {{ statusAmountByType.blocked }} blocked needs attention</p>
       </div>
 
       <v-btn color="primary"
@@ -113,26 +127,28 @@ function handleDeleteTask(data) {
     <div class="d-flex flex-row justify-start align-center ga-3 mb-5">
       <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>TO DO</span>
-        <h3 class="text-yellow">1</h3>
+        <h3 class="text-yellow">{{ statusAmountByType.todo }}</h3>
       </v-sheet>
 
       <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>IN PROGRESS</span>
-        <h3 class="text-blue">1</h3>
+        <h3 class="text-blue">{{ statusAmountByType.inprogress }}</h3>
       </v-sheet>
 
       <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>COMPLETED</span>
-        <h3 class="text-green">1</h3>
+        <h3 class="text-green">{{ statusAmountByType.completed }}</h3>
       </v-sheet>
 
       <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>BLOCKED</span>
-        <h3 class="text-red">1</h3>
+        <h3 class="text-red">{{ statusAmountByType.blocked }}</h3>
       </v-sheet>
     </div>
 
-    <TaskFilter @search="fetchTaskList" :project-id="projectId"/>
+    <TaskFilter @search="fetchTaskList"
+                :project-id="projectId"
+                :filter-result-amount="filterResultAmount"/>
 
     <div class="mt-5">
       <v-data-table :headers="headers"
