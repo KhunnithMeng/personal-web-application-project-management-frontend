@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, ref, defineEmits, defineProps, watch} from "vue";
+import {onMounted, ref, defineEmits, defineProps, watch, computed} from "vue";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
@@ -8,7 +8,7 @@ import {formatDateLocal} from "@/utils/date";
 import {getProjects} from "@/services/project-service";
 
 const emit = defineEmits(['search']);
-const props = defineProps(['projectId'])
+const props = defineProps(['projectId', 'filterResultAmount'])
 
 const filterForm = ref({
   title: '',
@@ -52,7 +52,8 @@ function clear() {
 <template>
   <v-sheet rounded border color="surface" class="pa-5">
     <v-row dense class="mb-5">
-      <h3 class="mr-2">Filters</h3> <v-chip size="small" color="primary" variant="elevated">1 Active</v-chip>
+      <h3 class="mr-2">Filters</h3>
+      <v-chip size="small" color="primary" variant="elevated">{{ filterResultAmount }} Active</v-chip>
     </v-row>
     <v-row no-gutters class="ga-2">
       <v-col>
