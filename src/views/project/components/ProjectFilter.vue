@@ -1,10 +1,11 @@
 <script setup>
 
-import {ref, defineEmits, onMounted} from "vue";
+import {ref, defineEmits, onMounted, defineProps} from "vue";
 import {getCategories} from "@/services/category-service";
 import {getTechStacks} from "@/services/tech-stack-service";
 
 const searchEmit = defineEmits(['search']);
+const props = defineProps(['filterResultAmount'])
 
 const statusList = Object.freeze([
   { name: 'Planning', value: 'planning' },
@@ -43,7 +44,7 @@ function clear() {
 <v-sheet border rounded color="surface" class="pa-5">
   <v-row no-gutters>
     <v-row dense class="mb-5">
-      <h3 class="mr-2">Filters</h3> <v-chip size="small" color="primary" variant="elevated">1 Active</v-chip>
+      <h3 class="mr-2">Filters</h3> <v-chip size="small" color="primary" variant="elevated">{{ filterResultAmount }} Active</v-chip>
     </v-row>
   </v-row>
   <v-row no-gutters class="ga-5">
