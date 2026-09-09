@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import TruncateText from "@/components/commons/TruncateText.vue";
 import {deleteProjectId, getProjects} from "@/services/project-service";
 import {router} from "@/router";
@@ -24,12 +24,20 @@ const actions = [
   {name: 'Delete', icon: 'mdi-delete', color: 'red', value: 'delete'}
 ];
 
+const totalProjectAmount = computed(() => {
+  return items.value.length
+});
+const totalActiveProjectAmount = computed(() => {
+  return items.value.filter(item => item.status === 'active').length;
+});
+
 let items = ref([]);
 let loading = ref(false);
 
 onMounted( () => {
   fetchProjects();
 });
+
 
 function fetchProjects() {
   loading.value = true;
@@ -78,7 +86,7 @@ function getRowProps({ item }) {
     <div class="d-flex justify-space-between align-center mb-5">
       <div>
         <h1>Project</h1>
-        <p>7 projects · 3 active · updated moments ago</p>
+        <p>{{ totalProjectAmount }} projects · {{ totalActiveProjectAmount }} active · updated moments ago</p>
       </div>
 
       <v-btn color="primary"
@@ -88,7 +96,7 @@ function getRowProps({ item }) {
       </v-btn>
     </div>
 
-    <ProjectFilter @search="search"/>
+    <ProjectFilter @search="search" :filter-result-amount="totalProjectAmount"/>
 
     <div class="mt-5">
       <v-data-table :items="items"
