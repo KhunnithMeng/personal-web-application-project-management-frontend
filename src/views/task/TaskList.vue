@@ -15,7 +15,7 @@ const headers = Object.freeze([
   {title: 'Title', key: 'title'},
   {title: 'Status', key: 'status'},
   {title: 'Priority', key: 'priority'},
-  {title: 'Deadline', key: 'deadline', width: '11rem'},
+  {title: 'Deadline', key: 'deadline', width: '14rem'},
   {title: 'Hours (Est. / Actual)', key: 'estimatedHours'},
   {title: 'Tags', key: 'tags'},
   {title: 'Description', key: 'description'},
@@ -151,8 +151,8 @@ function handleDeleteTask(data) {
           </v-chip>
         </template>
 
-        <template v-slot:[`item.deadline`]="{ value }">
-          <TaskDeadLine :deadline="value"></TaskDeadLine>
+        <template v-slot:[`item.deadline`]="{ value, item }">
+          <TaskDeadLine :deadline="value" :status="item.status"></TaskDeadLine>
         </template>
 
         <template v-slot:[`item.estimatedHours`]="{ item }">
