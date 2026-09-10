@@ -2,6 +2,17 @@ export function formatDate(date) {
     return date ? new Date(date).toDateString() : null;
 }
 
+export function formatMonthDayNumberYear(date) {
+   if (!date) return null;
+
+   date = new Date(date);
+   const monthName = date.toLocaleString('default',  { month: 'short' });
+   const dayNumber = String(date.getDate()).padStart(2, '0');
+   const year = String(date.getFullYear());
+
+   return `${monthName} ${dayNumber}, ${year}`;
+}
+
 export function formatDateLocal(date) {
    const d = new Date(date);
    const year = d.getFullYear();

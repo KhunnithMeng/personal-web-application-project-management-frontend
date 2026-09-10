@@ -6,6 +6,8 @@ import {router} from "@/router";
 import ProjectFilter from "@/views/project/components/ProjectFilter.vue";
 import {PROJECT_STATUSES} from "@/constants/projectStatus";
 import ProjectDateDisplay from "@/views/project/components/ProjectDateDisplay.vue";
+import ProjectGridView from "@/views/project/components/ProjectGridView.vue";
+import {PROJECT_ACTION} from "@/constants/projectAction";
 
 const headers = Object.freeze([
   {title: 'Title', key: 'name'},
@@ -18,12 +20,6 @@ const headers = Object.freeze([
   {title: 'Action', key: 'action'},
 ]);
 
-const actions = [
-  {name: 'Show Tasks', icon: 'mdi-format-list-bulleted', color: '', value: 'task'},
-  {name: 'Edit', icon: 'mdi-pencil', color: '', value: 'edit'},
-  {name: 'Delete', icon: 'mdi-delete', color: 'red', value: 'delete'}
-];
-
 const totalProjectAmount = computed(() => {
   return items.value.length
 });
@@ -33,6 +29,7 @@ const totalActiveProjectAmount = computed(() => {
 
 let items = ref([]);
 let loading = ref(false);
+let isTableView = ref(true);
 
 onMounted( () => {
   fetchProjects();
@@ -89,17 +86,34 @@ function getRowProps({ item }) {
         <p>{{ totalProjectAmount }} projects · {{ totalActiveProjectAmount }} active · updated moments ago</p>
       </div>
 
-      <v-btn color="primary"
-             prepend-icon="mdi-plus-thick"
-             @click="router.push('/project/add')">
-        Create Project
-      </v-btn>
+      <div class="d-flex ga-2 align-center">
+        <v-btn-toggle divided
+                      border
+                      density="comfortable"
+                      v-model="isTableView"
+                      rounded="xl">
+          <v-btn :value="true">
+            <v-icon start>mdi-menu</v-icon>
+            <span>Table</span>
+          </v-btn>
+          <v-btn :value="false">
+            <v-icon start>mdi-grid-large</v-icon>
+            <span>Card</span>
+          </v-btn>
+        </v-btn-toggle>
+        <v-btn color="primary"
+               prepend-icon="mdi-plus-thick"
+               @click="router.push('/project/add')">
+          Create Project
+        </v-btn>
+      </div>
     </div>
 
     <ProjectFilter @search="search" :filter-result-amount="totalProjectAmount"/>
 
     <div class="mt-5">
-      <v-data-table :items="items"
+      <v-data-table v-if="isTableView"
+                    :items="items"
                     :headers="headers"
                     :loading="loading"
                     :row-props="getRowProps">
@@ -141,7 +155,7 @@ function getRowProps({ item }) {
             <v-icon>mdi-dots-vertical</v-icon>
             <v-menu activator="parent">
               <v-list>
-                <v-list-item v-for="(action, index) of actions"
+                <v-list-item v-for="(action, index) of PROJECT_ACTION"
                              :key="index" >
                   <v-btn :prepend-icon="action.icon"
                          class="w-100 justify-start"
@@ -155,6 +169,9 @@ function getRowProps({ item }) {
           </v-btn>
         </template>
       </v-data-table>
+      <template v-else>
+        <ProjectGridView :projects="items" @handle-action="handleAction"></ProjectGridView>
+      </template>
     </div>
   </div>
 </template>

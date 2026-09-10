@@ -44,7 +44,8 @@ function clear() {
 <v-sheet border rounded color="surface" class="pa-5">
   <v-row no-gutters>
     <v-row dense class="mb-5">
-      <h3 class="mr-2">Filters</h3> <v-chip size="small" color="primary" variant="elevated">{{ filterResultAmount }} Active</v-chip>
+      <h3 class="mr-2">Filters</h3>
+      <v-chip size="small" color="primary" variant="elevated">{{ filterResultAmount }} Active</v-chip>
     </v-row>
   </v-row>
   <v-row no-gutters class="ga-5">
