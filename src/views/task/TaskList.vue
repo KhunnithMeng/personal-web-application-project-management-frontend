@@ -125,22 +125,22 @@ function handleDeleteTask(data) {
     </div>
 
     <div class="d-flex flex-row justify-start align-center ga-3 mb-5">
-      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+      <v-sheet rounded="lg" border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>TO DO</span>
         <h3 class="text-yellow">{{ statusAmountByType.todo }}</h3>
       </v-sheet>
 
-      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+      <v-sheet rounded="lg" border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>IN PROGRESS</span>
         <h3 class="text-blue">{{ statusAmountByType.inprogress }}</h3>
       </v-sheet>
 
-      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+      <v-sheet rounded="lg" border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>COMPLETED</span>
         <h3 class="text-green">{{ statusAmountByType.completed }}</h3>
       </v-sheet>
 
-      <v-sheet rounded border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
+      <v-sheet rounded="lg" border color="surface" class="flex-grow-1 d-flex justify-space-between pa-3">
         <span>BLOCKED</span>
         <h3 class="text-red">{{ statusAmountByType.blocked }}</h3>
       </v-sheet>

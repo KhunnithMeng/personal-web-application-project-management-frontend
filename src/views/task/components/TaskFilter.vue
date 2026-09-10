@@ -50,7 +50,7 @@ function clear() {
 </script>
 
 <template>
-  <v-sheet rounded border color="surface" class="pa-5">
+  <v-sheet rounded="lg" border color="surface" class="pa-5">
     <v-row dense class="mb-5">
       <h3 class="mr-2">Filters</h3>
       <v-chip size="small" color="primary" variant="elevated">{{ filterResultAmount }} Active</v-chip>
