@@ -18,9 +18,11 @@ function handleAction(action, project) {
 
 <template>
   <v-row>
-    <v-col cols="4"
-           class="d-flex"
-           v-for="project of projects" :key="project.id">
+    <v-col v-for="project in projects" :key="project.id"
+           cols="12"
+           sm="6"
+           md="4"
+           class="d-flex">
       <ProjectCard class="flex-grow-1"
                    :category="project.category.name"
                    :status="project.status"
