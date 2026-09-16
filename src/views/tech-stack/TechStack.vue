@@ -78,7 +78,10 @@ function handleAction(value, item) {
 <template>
   <div class="mx-5">
     <div class="d-flex justify-space-between align-center">
-      <h1>Tech Stack</h1>
+      <div>
+        <h1>Tech Stack</h1>
+        <p class="text-grey">18 technologies registered across your projects</p>
+      </div>
 
       <span>
         <v-btn text="Create Tech Stack"
@@ -95,14 +98,21 @@ function handleAction(value, item) {
       </span>
     </div>
 
-    <div class="mt-3">
-      <BaseServerTable ref="tableRef"
-                       :fetcher="loadTechStack"
-                       :actions="actions"
-                       :headers="headers"
-                       @handle-action="handleAction">
-      </BaseServerTable>
-    </div>
+    <v-row class="mt-3">
+      <v-col cols="3" >
+        <v-text-field variant="outlined"
+                      label="Search By Name..."
+                      prepend-inner-icon="mdi-magnify"
+                      rounded="lg"></v-text-field>
+      </v-col>
+    </v-row>
+
+    <BaseServerTable ref="tableRef"
+                     :fetcher="loadTechStack"
+                     :actions="actions"
+                     :headers="headers"
+                     @handle-action="handleAction">
+    </BaseServerTable>
   </div>
 </template>
 
