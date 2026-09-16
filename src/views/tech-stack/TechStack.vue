@@ -76,7 +76,7 @@ function handleAction(value, item) {
 </script>
 
 <template>
-  <div class="ma-3">
+  <div class="mx-5">
     <div class="d-flex justify-space-between align-center">
       <h1>Tech Stack</h1>
 
