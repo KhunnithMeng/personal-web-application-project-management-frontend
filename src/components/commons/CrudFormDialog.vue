@@ -11,11 +11,14 @@ const emit = defineEmits(['update:modelValue', 'submit', 'cancel']);
 const form = ref({});
 
 watch(() => props.dialogValue, value => {
-  form.value = Object.keys(value).length === 0 ? {} : { ...value };
-}, { immediate: true })
+  form.value = Object.keys(value).length === 0 ? {} : {...value};
+}, {immediate: true})
 
 function submit() {
-  emit('submit', { isEdit: !!Object.keys(props.dialogValue).length, ...form.value });
+  emit('submit', {
+    isEdit: !!Object.keys(props.dialogValue).length,
+    ...form.value
+  });
   emit('update:modelValue', false);
   form.value = {};
 }
@@ -34,19 +37,30 @@ function cancel() {
     <v-card prepend-icon="mdi-list-box-outline"
             :title="title">
       <v-card-text>
-        <v-row density="confortable">
+        <v-row density="confortable" no-gutters>
           <v-col cols="12"
                  v-for="field in fields"
-                 :key="field.key" >
+                 :key="field.key">
 
             <v-text-field v-if="field.type === 'text'"
                           :label="field.name"
-                          v-model="form[field.key]">
+                          v-model="form[field.key]"
+                          variant="outlined"
+                          rounded="lg">
             </v-text-field>
+
+            <v-color-input v-if="field.type === 'colorInput'"
+                           v-model="form[field.key]"
+                           :label="field.name"
+                           pip-location="prepend-inner"
+                           rounded="lg"
+                           variant="outlined"></v-color-input>
 
             <v-textarea v-if="field.type === 'textarea'"
                         :label="field.name"
-                        v-model="form[field.key]"></v-textarea>
+                        v-model="form[field.key]"
+                        variant="outlined"
+                        rounded="lg"></v-textarea>
 
           </v-col>
         </v-row>
@@ -58,12 +72,14 @@ function cancel() {
         <v-btn color="secondary"
                title="Cancel"
                type="flat"
-               @click="cancel()">Cancel</v-btn>
+               @click="cancel()">Cancel
+        </v-btn>
 
         <v-btn color="primary"
                title="Submit"
                type="flat"
-               @click="submit()">Submit</v-btn>
+               @click="submit()">Submit
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

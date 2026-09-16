@@ -21,6 +21,7 @@ const actions = [
 ]
 const fields = [
   { name: 'Name', key: 'name', type: 'text' },
+  { name: 'Color', key: 'color', type: 'colorInput' },
   { name: 'Description', key: 'description', type: 'textarea' }
 ];
 
