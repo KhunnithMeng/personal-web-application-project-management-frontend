@@ -115,7 +115,7 @@ function handleDeleteTask(data) {
     <div class="d-flex justify-space-between align-center mb-5">
       <div>
         <h1>Tasks</h1>
-        <p>{{ filterResultAmount }} tasks · {{ statusAmountByType.blocked }} blocked needs attention</p>
+        <p class="text-grey">{{ filterResultAmount }} tasks · {{ statusAmountByType.blocked }} blocked needs attention</p>
       </div>
 
       <v-btn color="primary"

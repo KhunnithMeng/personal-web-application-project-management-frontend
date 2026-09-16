@@ -83,7 +83,7 @@ function getRowProps({ item }) {
     <div class="d-flex justify-space-between align-center mb-5">
       <div>
         <h1>Project</h1>
-        <p>{{ totalProjectAmount }} projects · {{ totalActiveProjectAmount }} active · updated moments ago</p>
+        <p class="text-grey">{{ totalProjectAmount }} projects · {{ totalActiveProjectAmount }} active · updated moments ago</p>
       </div>
 
       <div class="d-flex ga-2 align-center">
