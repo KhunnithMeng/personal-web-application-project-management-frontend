@@ -79,7 +79,7 @@ function getRowProps({ item }) {
 </script>
 
 <template>
-  <div class="ma-5">
+  <div class="mx-5">
     <div class="d-flex justify-space-between align-center mb-5">
       <div>
         <h1>Project</h1>
