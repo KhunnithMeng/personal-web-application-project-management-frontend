@@ -39,9 +39,16 @@ function create() {
 
 function save(techStack) {
   openLoader();
+
+  const payload = {
+    name: techStack.name,
+    color: techStack.color,
+    description: techStack.description
+  }
   const apiHandler = techStack.isEdit ?
-      updateTechStack(techStack.id, { name: techStack.name, description: techStack.description }) :
-      createTechStack(techStack);
+      updateTechStack(techStack.id, payload) :
+      createTechStack(payload);
+
   apiHandler
       .then((res) => {
         if (res) {

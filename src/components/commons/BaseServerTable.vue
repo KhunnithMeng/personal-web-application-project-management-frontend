@@ -1,7 +1,6 @@
 <script setup>
 
 import {reactive, defineProps, defineEmits, defineExpose, ref} from "vue";
-import colors from 'vuetify/util/colors';
 
 defineExpose({
   reload: fetchData
@@ -53,13 +52,6 @@ function getFirstLetterFromName(name) {
   return name ? name[0].toUpperCase() : '';
 }
 
-function getRandomColor() {
-  const colorArray = Object.values(colors).flat().flatMap(colorObject => Object.values(colorObject));
-  const randomIndex = Math.floor(Math.random() * colorArray.length);
-  console.log(Object)
-  return colorArray[randomIndex];
-}
-
 </script>
 
 <template>
@@ -76,7 +68,7 @@ function getRandomColor() {
 
     <template v-slot:[`item.name`]="{ item }">
       <span class="mr-2">
-        <v-avatar :color="getRandomColor()"
+        <v-avatar :color="item.color"
                   rounded="lg"
                   size="small">
           {{ getFirstLetterFromName(item.name) }}
