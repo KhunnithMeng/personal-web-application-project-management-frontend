@@ -46,6 +46,7 @@ function cancel() {
                           :label="field.name"
                           v-model="form[field.key]"
                           variant="outlined"
+                          autocomplete="off"
                           rounded="lg">
             </v-text-field>
 
@@ -54,6 +55,7 @@ function cancel() {
                            :label="field.name"
                            pip-location="prepend-inner"
                            rounded="lg"
+                           autocomplete="=off"
                            variant="outlined"></v-color-input>
 
             <v-textarea v-if="field.type === 'textarea'"
