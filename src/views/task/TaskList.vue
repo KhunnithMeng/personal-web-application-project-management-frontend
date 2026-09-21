@@ -183,7 +183,7 @@ function handleDeleteTask(data) {
                   class="ma-1"
                   size="small"
                   :color="tag.color">
-            {{ tag.name }}
+            <span class="font-weight-bold">{{ tag.name }}</span>
           </v-chip>
         </template>
 
