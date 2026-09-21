@@ -85,7 +85,7 @@ function handleAction(action, item) {
 
 <template>
 <div class="mx-5">
-  <div class="d-flex justify-space-between align-center">
+  <div class="d-flex justify-space-between align-center mb-5">
     <div>
       <h1>Category</h1>
       <p class="text-grey">{{ totalCategories }} categories registered across your projects</p>
@@ -105,12 +105,13 @@ function handleAction(action, item) {
                     @submit="save"></CrudFormDialog>
   </div>
 
-  <v-row class="mt-3">
+  <v-row>
     <v-col cols="3">
       <v-text-field variant="outlined"
                     prepend-inner-icon="mdi-magnify"
                     rounded="lg"
                     label="Search by name..."
+                    density="comfortable"
                     autocomplete="off"></v-text-field>
     </v-col>
   </v-row>
