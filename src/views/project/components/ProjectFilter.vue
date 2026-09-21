@@ -53,12 +53,16 @@ function clear() {
       <v-text-field label="Name"
                     autocomplete="off"
                     v-model="filter.name"
+                    density="compact"
+                    rounded="lg"
                     variant="outlined"></v-text-field>
     </v-col>
 
     <v-col>
       <v-select label="Status"
                 :items="statusList"
+                density="compact"
+                rounded="lg"
                 item-title="name"
                 item-value="value"
                 variant="outlined"
@@ -68,6 +72,8 @@ function clear() {
     <v-col>
       <v-date-input prepend-icon=""
                     prepend-inner-icon="$calendar"
+                    density="compact"
+                    rounded="lg"
                     label="Start Date"
                     v-model="filter.startDate"
                     persistent-placeholder
@@ -78,6 +84,8 @@ function clear() {
     <v-col>
       <v-date-input prepend-icon=""
                     prepend-inner-icon="$calendar"
+                    density="compact"
+                    rounded="log"
                     label="End Date"
                     v-model="filter.endDate"
                     persistent-placeholder
@@ -88,6 +96,8 @@ function clear() {
     <v-col>
       <v-autocomplete variant="outlined"
                       placeholder="Category"
+                      density="compact"
+                      rounded="lg"
                       :items="categories"
                       autocomplete="off"
                       v-model="filter.category"
@@ -97,6 +107,8 @@ function clear() {
     <v-col>
       <v-select label="Tech Stack"
                 :items="techStacks"
+                density="compact"
+                rounded="lg"
                 variant="outlined"
                 v-model="filter.techStack"></v-select>
     </v-col>
