@@ -53,17 +53,17 @@ function clear() {
   <v-sheet rounded="lg" border color="surface" class="pa-5">
     <v-row dense class="mb-5">
       <h3 class="mr-2">Filters</h3>
-      <v-chip size="small" color="primary" variant="elevated">{{ filterResultAmount }} Active</v-chip>
+      <v-chip size="small" color="primary" variant="elevated" density="compact">{{ filterResultAmount }} Active</v-chip>
     </v-row>
     <v-row no-gutters class="ga-2">
       <v-col>
-        <v-text-field label="Title"
+        <v-text-field label="Title" density="compact" rounded="lg"
                       name="title"
                       v-model="filterForm.title"
                       variant="outlined"></v-text-field>
       </v-col>
       <v-col>
-        <v-select label="Status"
+        <v-select label="Status" density="compact" rounded="lg"
                   clearable
                   :items="TASK_STATUSES"
                   item-title="title"
@@ -72,7 +72,7 @@ function clear() {
                   v-model="filterForm.status"></v-select>
       </v-col>
       <v-col>
-        <v-select label="Priority"
+        <v-select label="Priority" density="compact" rounded="lg"
                   clearable
                   :items="TASK_PRIORITY"
                   variant="outlined"
@@ -81,7 +81,7 @@ function clear() {
                   v-model="filterForm.priority"></v-select>
       </v-col>
       <v-col>
-        <v-date-input prepend-icon=""
+        <v-date-input prepend-icon="" density="compact" rounded="lg"
                       prepend-inner-icon="$calendar"
                       variant="outlined"
                       persistent-placeholder
@@ -90,7 +90,7 @@ function clear() {
                       label="Deadline"></v-date-input>
       </v-col>
       <v-col>
-        <v-select chips
+        <v-select chips density="compact" rounded="lg"
                   label="Tags"
                   variant="outlined"
                   multiple
@@ -105,7 +105,7 @@ function clear() {
             label="Select"
             :items="projects"
             item-title="name"
-            item-value="id"
+            item-value="id" density="compact" rounded="lg"
             v-model="filterForm.projectId"
             variant="outlined"
             :readonly="projectId"
@@ -115,13 +115,13 @@ function clear() {
     <v-row dense>
       <v-btn prepend-icon="mdi-magnify"
              class="mr-2"
-             type="button"
+             type="button" density="comfortable" rounded="lg"
              color="primary"
              @click="search">Search</v-btn>
 
       <v-btn prepend-icon="mdi-broom"
              type="button"
-             variant="tonal"
+             variant="tonal" density="comfortable" rounded="lg"
              @click="clear">Cancel All</v-btn>
     </v-row>
   </v-sheet>
