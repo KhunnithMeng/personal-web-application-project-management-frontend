@@ -181,7 +181,8 @@ function handleDeleteTask(data) {
                   :key="tag.id"
                   variant="outlined"
                   class="ma-1"
-                  size="small">
+                  size="small"
+                  :color="tag.color">
             {{ tag.name }}
           </v-chip>
         </template>
