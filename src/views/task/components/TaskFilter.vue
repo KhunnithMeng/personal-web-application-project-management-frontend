@@ -5,7 +5,7 @@ import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
 import {formatDateLocal} from "@/utils/date";
-import {getProjects} from "@/services/project-service";
+import {projectService} from "@/services/project-service";
 
 const emit = defineEmits(['search']);
 const props = defineProps(['projectId', 'filterResultAmount'])
@@ -23,7 +23,7 @@ const projects = ref([]);
 
 onMounted(() => {
   getTags().then(res => tags.value = res?.data.map(r => r.name) || []);
-  getProjects().then(res => {
+  projectService.getProjects().then(res => {
     projects.value = res?.data || [];
   });
 });

@@ -1,7 +1,7 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import TruncateText from "@/components/commons/TruncateText.vue";
-import {deleteProjectId, getProjects} from "@/services/project-service";
+import {projectService} from "@/services/project-service";
 import {router} from "@/router";
 import ProjectFilter from "@/views/project/components/ProjectFilter.vue";
 import {PROJECT_STATUSES} from "@/constants/projectStatus";
@@ -42,7 +42,7 @@ onMounted( () => {
 
 function fetchProjects() {
   loading.value = true;
-  getProjects()
+  projectService.getProjects()
       .then(res => items.value = res?.data || [])
       .catch(err => console.error(err))
       .finally(() => loading.value = false)
@@ -65,7 +65,7 @@ function handleAction(action, data) {
   }
 
   if (action === 'delete') {
-    deleteProjectId(data.id)
+    projectService.deleteProjectById(data.id)
         .then(() => fetchProjects())
         .catch(err => console.log(err))
   }
@@ -73,7 +73,7 @@ function handleAction(action, data) {
 
 function search(value) {
   loading.value = true;
-  getProjects(value)
+  projectService.getProjects(value)
       .then((res) => items.value = res?.data || [])
       .catch((err) => console.log(err))
       .finally(() => loading.value = false)
