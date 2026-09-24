@@ -8,6 +8,8 @@ import {PROJECT_STATUSES} from "@/constants/projectStatus";
 import ProjectDateDisplay from "@/views/project/components/ProjectDateDisplay.vue";
 import ProjectGridView from "@/views/project/components/ProjectGridView.vue";
 import {PROJECT_ACTION} from "@/constants/projectAction";
+import {useDialog} from "@/composibles/useDialog";
+import ProjectDialog from "@/views/project/ProjectDialog.vue";
 
 const headers = Object.freeze([
   {title: 'Title', key: 'name'},
@@ -19,6 +21,8 @@ const headers = Object.freeze([
   {title: 'Category', key: 'category'},
   {title: 'Action', key: 'action'},
 ]);
+
+const dialog = useDialog();
 
 const totalProjectAmount = computed(() => {
   return items.value.length
@@ -51,7 +55,12 @@ function handleAction(action, data) {
   }
 
   if (action === 'edit') {
-    router.push('/project/edit/' + data.id);
+    const dialogRef = dialog.open(ProjectDialog, {
+      maxWidth: '25vw',
+      props: { projectId: data.id }
+    })
+
+    dialogRef.then((isSave) => isSave && fetchProjects());
     return;
   }
 
@@ -74,6 +83,14 @@ function getRowProps({ item }) {
   return {
     class: `row-accent row-accent--${item.status}`
   }
+}
+
+function createProject() {
+  const dialogRef = dialog.open(ProjectDialog, {
+    maxWidth: '25vw',
+  });
+
+  dialogRef.then((isSave) => isSave && fetchProjects())
 }
 
 </script>
@@ -103,7 +120,7 @@ function getRowProps({ item }) {
         </v-btn-toggle>
         <v-btn color="primary"
                prepend-icon="mdi-plus-thick"
-               @click="router.push('/project/add')">
+               @click="createProject()">
           Create Project
         </v-btn>
       </div>
