@@ -5,7 +5,7 @@ import {onMounted, ref} from "vue";
 import {TASK_STATUSES} from "@/constants/taskStatus";
 import {TASK_PRIORITY} from "@/constants/taskPriority";
 import {getTags} from "@/services/tag-service";
-import {getProjects} from "@/services/project-service";
+import {projectService} from "@/services/project-service";
 import {useLoader} from "@/composibles/useLoader";
 import {taskService} from "@/services/task-service";
 import {useMessage} from "@/composibles/useMessage";
@@ -36,7 +36,7 @@ const task = ref({
 
 onMounted(() => {
   getTags().then(res => tags.value = res?.data || []);
-  getProjects().then(res => projects.value = res?.data || []);
+  projectService.getProjects().then(res => projects.value = res?.data || []);
 
   isAllTask.value = route.query.isAllTask === 'true';
   projectId.value = +route.params.projectId;
