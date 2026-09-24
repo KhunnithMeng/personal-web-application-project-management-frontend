@@ -9,7 +9,7 @@ import ProjectDateDisplay from "@/views/project/components/ProjectDateDisplay.vu
 import ProjectGridView from "@/views/project/components/ProjectGridView.vue";
 import {PROJECT_ACTION} from "@/constants/projectAction";
 import {useDialog} from "@/composibles/useDialog";
-import ProjectDialog from "@/views/project/ProjectDialog.vue";
+import ProjectDialog from "@/views/project/ProjectDetail.vue";
 
 const headers = Object.freeze([
   {title: 'Title', key: 'name'},

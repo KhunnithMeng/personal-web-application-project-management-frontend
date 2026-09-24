@@ -1,20 +1,17 @@
 <script setup>
+
+import {useDialog} from "@/composibles/useDialog";
+import {PROJECT_STATUSES} from "@/constants/projectStatus";
 import {onMounted, ref} from "vue";
-import {useRoute, useRouter} from "vue-router";
 import {getTechStacks} from "@/services/tech-stack-service";
 import {getCategories} from "@/services/category-service";
-import {createProject, getProjectById, updateProjectById} from "@/services/project-service";
-import {useLoader} from "@/composibles/useLoader";
+import {projectService} from "@/services/project-service";
 import {useMessage} from "@/composibles/useMessage";
-import {PROJECT_STATUSES} from "@/constants/projectStatus";
 
-const route = useRoute();
-const router = useRouter();
-const { openLoader, closeLoader } = useLoader();
-const { showMessage } = useMessage();
+const dialog = useDialog();
+const message = useMessage();
 
 const form = ref(null);
-let projectId = ref(null);
 let project = ref({
   name: '',
   description: '',
@@ -24,66 +21,35 @@ let project = ref({
   techStackIds: [],
   categoryId: null
 });
-let categories = ref([]);
-let techStacks = ref([]);
+const projectId = ref(null);
+const techStacks = ref([]);
+const categories = ref([]);
+const loading = ref(false);
+const cardLoading = ref(false);
 
-async function submit() {
-  const { valid } = await form.value.validate();
-  if (!valid) {
-    showMessage('Please check the highlighted fields — some information is missing or incorrect.', 'error');
-    return;
-  }
-  const payload = {
-    ...project.value,
-    startDate: project.value.startDate && new Date(project.value.startDate).toISOString(),
-    endDate: project.value.endDate && new Date(project.value.endDate).toISOString(),
-    techStackIds: [...project.value.techStackIds]
-  }
-
-  openLoader();
-  if (projectId.value) {
-    updateProjectById(projectId.value, project.value)
-        .then(() => {
-          showMessage('Successfully updated');
-          router.back();
-        })
-        .catch(err => console.error(err))
-        .finally(() => {
-          closeLoader();
-        })
-  } else {
-    createProject(payload)
-        .then(() => {
-          showMessage("Successfully created");
-          router.back();
-        })
-        .catch(error => console.error(error))
-        .finally(() => closeLoader());
-  }
-}
-
-onMounted(async () => {
-  projectId.value = route.params.id;
-
-  if (projectId.value > 0) {
-    bindProjectToForm();
-  }
-
+onMounted(() => {
   fetchTechStacks();
   fetchCategories();
+
+  const { props } = dialog.dialogOptions.value;
+  projectId.value = props?.projectId;
+
+  if (projectId.value) {
+    fetchProjectById(projectId.value);
+  }
 })
 
-function bindProjectToForm() {
-  openLoader();
-  getProjectById(projectId.value).then(res => {
+function fetchProjectById(id) {
+  cardLoading.value = true;
+  projectService.getProjectById(id).then(res => {
     if (res) {
       project.value = {
         ...res.data,
-        techStackIds: res.data.techStack?.map(t => t.id) || [],
-        categoryId: res.data.category?.id || null
+        categoryId: res.data.category?.id || null,
+        techStackIds: res.data.techStack?.map(t => t.id) || []
       }
     }
-  }).finally(() => closeLoader())
+  }).finally(() => cardLoading.value = false)
 }
 
 function fetchTechStacks() {
@@ -94,95 +60,174 @@ function fetchCategories() {
   getCategories({ itemsPerPage: 0 }).then(res => categories.value = res?.data || []);
 }
 
+async function submit() {
+  const { valid } = await form.value.validate();
+
+  if (!valid) {
+    message.showMessage(
+        'Please check the highlighted fields — some information is missing or incorrect.', 'error')
+    return;
+  }
+
+  if (projectId.value) {
+    loading.value = true;
+    projectService.updateProjectById(projectId.value, project.value)
+        .then(() => {
+          message.showMessage('Project is updated successfully');
+          dialog.close(true);
+        })
+        .finally(() => loading.value = false);
+
+    return;
+  }
+
+  loading.value = true;
+  projectService.createProject(project.value)
+      .then(() => {
+        message.showMessage('Project is saved successfully');
+        dialog.close(true);
+      })
+      .finally(() => loading.value = false)
+}
+
 </script>
 
 <template>
-  <div class="ma-5">
-    <div class="d-flex justify-space-between align-center mb-3">
-      <h1>{{ projectId ? 'Edit Project' : 'Create Project' }}</h1>
+  <v-card :loading="cardLoading">
+    <v-card-item>
+      <v-card-title>
+        {{ projectId ? 'Update' : 'Create' }} Project
+      </v-card-title>
+      <v-card-subtitle>
+        Fill in the details below to {{ projectId ? 'update a existing project' : 'add a new project' }}.
+      </v-card-subtitle>
 
-      <span>
-        <v-btn prepend-icon="mdi-cancel"
-               class="mr-2"
-               color="grey"
-               @click="router.back()">Cancel</v-btn>
-        <v-btn prepend-icon="mdi-plus"
-               color="primary"
-               @click="submit()" >Submit</v-btn>
-      </span>
-    </div>
+      <template #append>
+        <v-btn icon="mdi-close"
+               @click="dialog.close()"></v-btn>
+      </template>
+    </v-card-item>
 
-    <v-card class="mx-auto pa-5" max-width="1200">
+    <v-divider></v-divider>
+
+    <v-card-text>
       <v-form ref="form">
-        <span class="d-flex justify-space-between align-center ga-5">
-        <v-text-field label="Project Title"
-                      v-model="project.name"
-                      autocomplete="off"
-                      variant="underlined"
-                      required
-                      :rules="[v => !!v || 'Project name is required']">
-        </v-text-field>
-        <v-btn-toggle color="primary"
-                      v-model="project.status">
-          <v-btn v-for="status of PROJECT_STATUSES"
-                 :key="status.value"
-                 :color="PROJECT_STATUSES.find(v => v.value === status.value)?.color"
-                 :value="status.value">
-            {{ status.name }}
-          </v-btn>
-        </v-btn-toggle>
-      </span>
-
-        <span class="d-flex justify-space-between align-center ga-5">
-        <v-date-input prepend-icon=""
-                      prepend-inner-icon="$calendar"
-                      label="Start Date"
-                      v-model="project.startDate"
-                      persistent-placeholder
-                      autocomplete="off"
-                      required
-                      :rules="[v => !!v || 'Start date is required']"></v-date-input>
-        <v-date-input prepend-icon=""
-                      prepend-inner-icon="$calendar"
-                      label="End Date"
-                      v-model="project.endDate"
-                      persistent-placeholder
-                      autocomplete="off"></v-date-input>
-      </span>
-
-        <v-combobox variant="underlined"
-                    chips
-                    clearable
-                    placeholder="Tech Stack"
-                    item-value="id"
-                    item-title="name"
-                    v-model="project.techStackIds"
-                    autocomplete="off"
-                    required
-                    multiple
-                    :rules="[v => (!!v && v.length > 0) || 'Tech stack is required at least one']"
-                    :return-object="false"
-                    :items="techStacks"></v-combobox>
-
-        <v-autocomplete variant="underlined"
-                        placeholder="Category"
+        <v-row density="comfortable">
+          <v-col cols="12" md="6">
+            <v-text-field variant="outlined"
+                          density="comfortable"
+                          label="Project Title"
+                          rounded="lg"
+                          placeholder="e.g. Nexus E-commerce Platform"
+                          v-model="project.name"
+                          :rules="[v => !!v || 'Project Title is required']"></v-text-field>
+          </v-col>
+          <v-col cols=12 md="6">
+            <v-autocomplete variant="outlined"
+                            density="comfortable"
+                            rounded="lg"
+                            label="Category"
+                            placeholder="Select a category..."
+                            item-value="id"
+                            item-title="name"
+                            autocomplete="off"
+                            clearable
+                            required
+                            v-model="project.categoryId"
+                            :items="categories"
+                            :rules="[v => !!v || 'Category is required']"></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-label>Status</v-label>
+            <v-chip-group mandatory
+                          column
+                          selected-class="text-white"
+                          v-model="project.status">
+              <v-chip v-for="status of PROJECT_STATUSES"
+                      filter
+                      :color="status.color"
+                      :key="status.value"
+                      :value="status.value">
+                {{ status.name }}
+              </v-chip>
+            </v-chip-group>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-combobox variant="outlined"
+                        rounded="lg"
+                        density="comfortable"
+                        chips
+                        clearable
+                        label="Tech Stack"
                         item-value="id"
                         item-title="name"
                         autocomplete="off"
-                        v-model="project.categoryId"
-                        clearable
                         required
-                        :rules="[v => !!v || 'Category is required']"
-                        :items="categories"></v-autocomplete>
-
-        <v-textarea row="4"
-                    placeholder="Description"
-                    v-model="project.description"
-                    clearable></v-textarea>
+                        multiple
+                        :rules="[v => (!!v && v.length > 0) || 'Tech stack is required at least one']"
+                        :return-object="false"
+                        :items="techStacks"
+                        v-model="project.techStackIds"></v-combobox>
+          </v-col>
+          <v-col cols="12" md="6" >
+            <v-date-input prepend-icon=""
+                          prepend-inner-icon="$calendar"
+                          label="Start Date"
+                          v-model="project.startDate"
+                          persistent-placeholder
+                          autocomplete="off"
+                          variant="outlined"
+                          density="comfortable"
+                          rounded="lg"
+                          required
+                          :rules="[v => !!v || 'Start date is required']"></v-date-input>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-date-input prepend-icon=""
+                          prepend-inner-icon="$calendar"
+                          label="End Date"
+                          v-model="project.endDate"
+                          persistent-placeholder
+                          variant="outlined"
+                          density="comfortable"
+                          rounded="lg"
+                          autocomplete="off"></v-date-input>
+          </v-col>
+          <v-col cols="12">
+            <v-textarea row="4"
+                        variant="outlined"
+                        rounded="lg"
+                        density="comfortable"
+                        placeholder="Description"
+                        v-model="project.description"></v-textarea>
+          </v-col>
+        </v-row>
       </v-form>
-    </v-card>
-  </div>
+    </v-card-text>
 
+    <v-divider></v-divider>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+
+      <v-btn
+          text="Close"
+          variant="plain"
+          @click="dialog.close()"
+      ></v-btn>
+
+      <v-btn
+          color="primary"
+          prepend-icon="mdi-plus"
+          rounded="lg"
+          variant="flat"
+          :loading="loading"
+          @click="submit()"
+      >
+        {{ projectId ? 'Update Project' : 'Create Project' }}
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <style scoped>
