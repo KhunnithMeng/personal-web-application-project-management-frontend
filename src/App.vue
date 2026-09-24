@@ -8,6 +8,7 @@
     <NavBar @expenseSideBar="expenseSideBar" />
 
     <v-main>
+      <CustomDialog/>
       <LoaderDialog/>
       <MessageSnackBar/>
       <RouterView/>
@@ -21,6 +22,7 @@ import SideBar from "@/components/layouts/SideBar.vue";
 import {ref} from "vue";
 import LoaderDialog from "@/components/commons/LoaderDialog.vue";
 import MessageSnackBar from "@/components/commons/MessageSnackBar.vue";
+import CustomDialog from "@/components/commons/CustomDialog.vue";
 
 const drawer = ref(null);
 

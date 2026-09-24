@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, onMounted, ref} from 'vue';
+import {computed, defineProps, onMounted, ref} from 'vue';
 
 const props = defineProps({
   date: {
@@ -8,21 +8,24 @@ const props = defineProps({
   }
 });
 
-const monthDay = ref('');
-const year = ref('');
 
 onMounted(() => {
   if (!props.date) {
     monthDay.value = ''
     year.value = '';
-    return
   }
+})
 
+const monthDay = computed(() => {
   const date = new Date(props.date);
   const dayOfTheMonth = String(date.getDate()).padStart(2, '0');
   const shortMonth = date.toLocaleDateString('default', { month: 'short' })
-  monthDay.value = `${shortMonth} ${dayOfTheMonth}`;
-  year.value = String(date.getFullYear());
+  return `${shortMonth} ${dayOfTheMonth}`;
+});
+
+const year = computed(() => {
+  const date = new Date(props.date);
+  return String(date.getFullYear());
 })
 
 </script>
